@@ -1,30 +1,28 @@
 module Example
-=begin
-  @doc (document1) Document One
+"""
+  @doc  document1 Document One
   @doc_desc detail:
-    This is document of number one.
-    It do not anything. Just to test.
+This is document of number one.
+It do not anything. Just to test.
   @doc_desc
-    This is the second paragraph of this document description.
-    It do not anything, too.
-=end
+This is the second paragraph of this document description.
+It do not anything, too.
+"""
   class SubA
     prefix :api
     version :v1
 
     resource :a_res do
-=begin
+"""
       @res get /api/v1/a_res Get list of A
       @res_desc
-        This resource can get list of A. It can paginate.
+This resource can get list of A. It can paginate.
       @res_desc see more:
-        This is the second paragraph of this resource description.
-        Can not have more describe.
+This is the second paragraph of this resource description.
+Can not have more describe.
 
       @res_param {Boolean} is A boolean value
-        More description
-      @res_param_section
-        Very very much
+More description
       @res_param {Number} num=0 A Number value
       @res_param {String=a,b,c} str Allowed values
 
@@ -55,36 +53,36 @@ module Example
       @res_param (group2) {Object[]} obj An Array value
       @res_param (group2) {Boolean} obj.ok ok?
       @res_param (group2) {Number} [obj.sum] sum
-=end
+"""
       get do
 
       end
     end
   end
 
-=begin
-  @doc (document2) Document One
+"""
+  @doc document2
   @doc_desc
 This is document of number two
-=end
+"""
   class SubB
     prefix :api
     version :v2
     # resource :comment
 
-    resource :b_res do
-=begin
-  @res post /api/v2/b_res Get list of A
-=end
+    resource :bres do
+"""
+  @res document2
+"""
       post do
 
       end
     end
   end
 
-=begin
+"""
   @doc other_document
-=end
+"""
   class Other
 
   end

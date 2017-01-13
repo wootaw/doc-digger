@@ -2,11 +2,11 @@ module Example
 =begin
   @doc (document1) Document One
   @doc_desc detail:
-    This is document of number one.
-    It do not anything. Just to test.
+This is document of number one.
+It do not anything. Just to test.
   @doc_desc
-    This is the second paragraph of this document description.
-    It do not anything, too.
+This is the second paragraph of this document description.
+It do not anything, too.
 =end
   class SubA
     prefix :api
@@ -16,15 +16,13 @@ module Example
 =begin
       @res get /api/v1/a_res Get list of A
       @res_desc
-        This resource can get list of A. It can paginate.
+This resource can get list of A. It can paginate.
       @res_desc see more:
-        This is the second paragraph of this resource description.
-        Can not have more describe.
+This is the second paragraph of this resource description.
+Can not have more describe.
 
       @res_param {Boolean} is A boolean value
-        More description
-      @res_param_section
-        Very very much
+More description
       @res_param {Number} num=0 A Number value
       @res_param {String=a,b,c} str Allowed values
 
