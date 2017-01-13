@@ -5,7 +5,7 @@ module Example
     This is document of number one.
     It do not anything. Just to test.
   @doc_desc
-    This is the second paragraph of this document description.
+      This is the second paragraph of this document description.
     It do not anything, too.
 =end
   class SubA
@@ -18,7 +18,7 @@ module Example
       @res_desc
         This resource can get list of A. It can paginate.
       @res_desc see more:
-        This is the second paragraph of this resource description.
+            This is the second paragraph of this resource description.
         Can not have more describe.
 
       @res_param {Boolean} is A boolean value
@@ -46,7 +46,7 @@ module Example
       @res_param {String} [str_x] X
       @res_param {String} [str_y] Y
       @res_param {String} [str_z] Z
-      @res_param_bind all str_x,str_y,str_z
+      @res_param_bind entire str_x,str_y,str_z
 
       @res_param (group1) {Object} obj An Object value
       @res_param (group1) {String} obj.name name of Object

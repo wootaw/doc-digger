@@ -30,7 +30,8 @@ describe Restwoods::FileParser do
 
     context "" do
       it "" do
-        @rb_parser.parse
+        ap @rb_parser.parse
+
       end
     end
   end

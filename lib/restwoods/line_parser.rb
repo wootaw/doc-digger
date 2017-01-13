@@ -26,8 +26,20 @@ module Restwoods
           part: :description,
           data: { text: parts[1].nil? ? nil : parts[1..(parts.length - 1)].join(" ") }
         }
+      when "@res"
+        {
+          type: :resource,
+          part: :main,
+          data: { method: parts[1], route: parts[2], summary: parts[3..(parts.length - 1)].join(" ") }
+        }
+      when "@res_desc"
+        {
+          type: :resource,
+          part: :description,
+          data: { text: parts[1].nil? ? nil : parts[1..(parts.length - 1)].join(" ") }
+        }
       else
-        { type: :joint, data: { text: @str } }
+        { type: :joint, text: @str }
       end
     end
 
