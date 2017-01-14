@@ -1,35 +1,14 @@
 module Restwoods
   class FileParser
 
-    SUPPORT_CLASSES = {
-      c: {
-        block: ['/**', '*/'],
-        ext: [".js", ".c", ".java", ".php", ".ts"]
-      },
-      ruby: {
-        block: ['=begin', '=end'],
-        ext: [".rb"]
-      },
-      python: {
-        block: ['"""', '"""'],
-        ext: [".py"]
-      },
-      elixir: {
-        block: ['@restwoods """', '"""'],
-        ext: [".ex", ".exs"]
-      },
-      perl: {
-        block: ['#**', '#*'],
-        ext: [".perl", ".pl", ".pm"]
-      },
-      erlang: {
-        block: ['%{', '%}'],
-        ext: [".erl"]
-      },
-      coffee: {
-        block: ['###', '###'],
-        ext: [".coffee"]
-      }
+    LANGUAGES = {
+      java:   [['/**', '*/'], [".js", ".c", ".java", ".php", ".ts"]],
+      ruby:   [['=begin', '=end'], [".rb"]],
+      perl:   [['#**', '#*'], [".perl", ".pl", ".pm"]],
+      python: [['"""', '"""'], [".py"]],
+      elixir: [['@restwoods """', '"""'], [".ex", ".exs"]],
+      erlang: [['%{', '%}'], [".erl"]],
+      coffee: [['###', '###'], [".coffee"]]
     }
 
     attr_reader :document_name
@@ -43,20 +22,20 @@ module Restwoods
       @results = []
     end
 
-    def current_class
-      @fclass ||= check_class
+    def lang
+      @flang ||= check_lang
     end
 
     def parse
-      if @type == "file" && !current_class.nil?
+      if @type == "file" && !lang.nil?
         File.open(@name, "r") do |f|
           started = false
           f.each_line do |s|
-            if s.strip == SUPPORT_CLASSES[current_class][:block][0]
+            if s.strip == LANGUAGES[lang][0][0]
               started = true
               next
             end
-            started = false if started && s.strip == SUPPORT_CLASSES[current_class][:block][1]
+            started = false if started && s.strip == LANGUAGES[lang][0][1]
             process_line(s) if started
           end
         end
@@ -67,16 +46,12 @@ module Restwoods
     protected
 
     def process_line(str)
-      line_parser = Restwoods::LineParser.new(str, current_class)
+      line_parser = Restwoods::LineParser.new(str, lang)
       hash = line_parser.parse
-      case hash[:type]
-      when :document
-        process_document_command(hash, line_parser)
-      when :resource
-        process_resource_command(hash, line_parser)
-      when :joint
-        process_document_command(hash, line_parser) if @latest_command[:type] == :document
-        process_resource_command(hash, line_parser) if @latest_command[:type] == :resource
+      if hash[:type] == :joint
+        send("process_#{@latest_command[:type]}_command", hash, line_parser) unless @latest_command.nil?
+      else
+        send("process_#{hash[:type]}_command", hash, line_parser)
       end
     end
 
@@ -95,8 +70,8 @@ module Restwoods
         array.last[:descriptions] << []
         array.last[:descriptions].last << hash[:data][:text] unless hash[:data][:text].nil?
       else
-        s = hash[:text].gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '')
-        array.last[:descriptions].last << s.rstrip
+        s = hash[:text].gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
+        array.last[:descriptions].last << s unless s.length == 0
       end
     end
 
@@ -110,10 +85,12 @@ module Restwoods
       process_command(@results.last[:resources], hash, parser)
     end
 
-    def check_class
-      SUPPORT_CLASSES.each do |c, options|
-        return c if options[:ext].include?(@ext)
-      end
+    def process_parameter_command(hash, parser)
+
+    end
+
+    def check_lang
+      LANGUAGES.each { |l, options| return l if options[1].include?(@ext) }
       nil
     end
 

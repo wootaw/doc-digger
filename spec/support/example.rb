@@ -35,7 +35,7 @@ module Example
 
       @res_param {Number} [num_x] Number X
       @res_param {Number} [num_y] Number Y
-      @res_param {Number} [num_z] Number Z
+      @res_param {Number} [num_z=3] Number Z
       @res_param_bind only num_a,num_b,num_c 2
 
       @res_param {String} [str_a] A String value
@@ -43,7 +43,7 @@ module Example
       @res_param {String} [str_c] A String value, again.
       @res_param_bind given str_a str_b,str_c
 
-      @res_param {String} [str_x] X
+      @res_param {String[]} [str_x] X
       @res_param {String} [str_y] Y
       @res_param {String} [str_z] Z
       @res_param_bind entire str_x,str_y,str_z

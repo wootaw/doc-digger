@@ -6,16 +6,16 @@ describe Restwoods::FileParser do
     @txt_parser = Restwoods::FileParser.new("./spec/support/example.txt")
   end
 
-  describe ".current_class" do
+  describe ".lang" do
     context "When the parser initialize a file that can't be support" do
       it "Should be returns nil" do
-        expect(@txt_parser.current_class.nil?).to be_truthy
+        expect(@txt_parser.lang.nil?).to be_truthy
       end
     end
 
     context "When the parser initialize a file that can be support" do
       it "Should be returns support class" do
-        expect(@rb_parser.current_class).to eq :ruby
+        expect(@rb_parser.lang).to eq :ruby
       end
     end
   end
