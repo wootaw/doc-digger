@@ -35,7 +35,11 @@ module Restwoods
               started = true
               next
             end
-            started = false if started && s.strip == LANGUAGES[lang][0][1]
+
+            if started && s.strip == LANGUAGES[lang][0][1]
+              started = false
+              joint_descriptions
+            end
             process_line(s) if started
           end
         end
@@ -56,8 +60,26 @@ module Restwoods
           send("process_#{@latest_command[:type]}_command", hash, line_parser)
         end unless @latest_command.nil?
       else
+        joint_descriptions
         send("process_#{hash[:type]}_command", hash, line_parser)
       end
+    end
+
+    def joint_descriptions
+      return if @latest_command.nil?
+      descs = case @latest_command[:type]
+      when :document
+        @results.last[:descriptions]
+      when :resource
+        case @latest_command[:part]
+        when :parameter
+          @results.last[:resources].last[:parameters].last[:descriptions]
+        else
+          @results.last[:resources].last[:descriptions]
+        end
+      end
+      descs[-1] = descs.last.join(" ") unless descs.nil?
+      @latest_command = nil
     end
 
     def set_latest_command(hash, parser)
