@@ -49,10 +49,20 @@ module Restwoods
       line_parser = Restwoods::LineParser.new(str, lang)
       hash = line_parser.parse
       if hash[:type] == :joint
-        send("process_#{@latest_command[:type]}_command", hash, line_parser) unless @latest_command.nil?
+        case @latest_command[:part]
+        when :parameter
+          process_parameter_command(hash, line_parser)
+        else
+          send("process_#{@latest_command[:type]}_command", hash, line_parser)
+        end unless @latest_command.nil?
       else
         send("process_#{hash[:type]}_command", hash, line_parser)
       end
+    end
+
+    def set_latest_command(hash, parser)
+      @latest_command = hash.select { |k, v| k != :data }
+      @latest_command[:space] = parser.start_space
     end
 
     def process_command(array, hash, parser)
@@ -63,14 +73,13 @@ module Restwoods
         array << {} if array.last.has_key?(:summary)
         array.last.merge!(hash[:data])
       when :description
-        @latest_command = hash.select { |k, v| k != :data }
-        @latest_command[:space] = parser.start_space
+        set_latest_command(hash, parser)
 
         array.last[:descriptions] = [] unless array.last.has_key?(:descriptions)
         array.last[:descriptions] << []
         array.last[:descriptions].last << hash[:data][:text] unless hash[:data][:text].nil?
       else
-        s = hash[:text].gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
+        s = hash[:text].to_s.gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
         array.last[:descriptions].last << s unless s.length == 0
       end
     end
@@ -80,13 +89,28 @@ module Restwoods
     end
 
     def process_resource_command(hash, parser)
-      @results << { resources: [] } if @results.length == 0
+      @results << {} if @results.length == 0
       @results.last[:resources] = [] unless @results.last.has_key?(:resources)
-      process_command(@results.last[:resources], hash, parser)
+      if hash[:part] == :parameter
+        process_parameter_command(hash, parser)
+      else
+        process_command(@results.last[:resources], hash, parser)
+      end
     end
 
     def process_parameter_command(hash, parser)
+      @results << { resources: [] } if @results.length == 0
+      res = @results.last[:resources].last
 
+      if hash[:type] == :joint
+        res[:parameters].last[:descriptions] = [[]] unless res[:parameters].last.has_key?(:descriptions)
+        # res[:parameters].last[:descriptions] << []
+        process_command(res[:parameters], hash, parser)
+      else
+        res[:parameters] = [] unless res.has_key?(:parameters)
+        res[:parameters] << hash[:data]
+        set_latest_command(hash, parser)
+      end
     end
 
     def check_lang

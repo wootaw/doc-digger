@@ -25,7 +25,7 @@ module Example
         More description
       @res_param_section
         Very very much
-      @res_param {Number} num=0 A Number value
+      @res_param {Number} [num=0] A Number value
       @res_param {String=a,b,c} str Allowed values
 
       @res_param {Number} [num_a] A Number value
@@ -45,16 +45,16 @@ module Example
 
       @res_param {String[]} [str_x] X
       @res_param {String} [str_y] Y
-      @res_param {String} [str_z] Z
-      @res_param_bind entire str_x,str_y,str_z
+      @res_param [z] Z
+      @res_param_bind entire str_x,str_y,z
 
       @res_param (group1) {Object} obj An Object value
       @res_param (group1) {String} obj.name name of Object
-      @res_param (group1) {Number} [obj.count] count of Object
+      @res_param (group1) {Number} [obj.count=0] count of Object
 
-      @res_param (group2) {Object[]} obj An Array value
-      @res_param (group2) {Boolean} obj.ok ok?
-      @res_param (group2) {Number} [obj.sum] sum
+      @res_param (group2) {Object[]} data An Array value
+      @res_param (group2) {Boolean} data.ok ok?
+      @res_param (group2) {Number[]=2,3,4} [data.sum] Sum
 =end
       get do
 
