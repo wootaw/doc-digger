@@ -59,6 +59,25 @@ module Example
       get do
 
       end
+
+=begin
+      @res post /api/v1/a_res Create an A resource
+
+      @res_header [a] A
+      @res_header {String=a,b,c} b B
+      @res_header {Number[]=1,2,3} c C
+        More description about header C.
+        Can't write more, really
+
+      @res_header (group1) {Object} obj An Object value
+      @res_header (group1) {String} obj.name name of Object
+      @res_header (group1) {Number} [obj.count=0] count of Object
+
+      @res_param {Boolean} ok A boolean value
+=end
+      post do
+
+      end
     end
   end
 

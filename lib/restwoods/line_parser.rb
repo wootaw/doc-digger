@@ -11,7 +11,7 @@ module Restwoods
 
     def parse
       parts = @str.strip.split(/\s+/)
-      command = parts[0].to_s.match(/\A@((doc(\_desc)?)|(res(\_((desc)|(param)))?))\Z/)
+      command = parts[0].to_s.match(/\A@((doc(\_desc)?)|(res(\_((desc)|(param)|(header)))?))\Z/)
       if command.nil? || command[1].nil?
         { type: :joint, text: @str }
       else
@@ -19,8 +19,8 @@ module Restwoods
       end
     end
 
-    def start_space
-      @start_space ||= @str.match(/\A\s*/)[0].length
+    def indentation
+      @indentation ||= @str.match(/\A\s*/)[0].length
     end
 
     protected
@@ -62,15 +62,15 @@ module Restwoods
     def analyze_arguments(args)
       { group: args[0].to_s.match(/\((\w+)\)/) }.tap do |r|
         r[:type]    = (r[:group].nil? ? args[0] : args[1]).to_s.match(/\{(.+)\}/)
-        r[:names]   = args[[r[:group], r[:type]].compact.inject(0) { |i, n| i + 1 }].to_s
+        r[:names]   = args[[r[:group], r[:type]].compact.length].to_s
         r[:name]    = r[:names].match(/\A\[(.+)\]\Z/)
         r[:default] = (r[:name].nil? ? r[:names] : r[:name][1]).split("=")
         r[:parent]  = r[:default][0].split(".")
       end
     end
 
-    def res_param(args)
-      { type: :resource, part: :parameter, data: {} }.tap do |result|
+    def res_input(args, part)
+      { type: :resource, part: part, data: {} }.tap do |result|
         r = analyze_arguments(args)
         unless r[:type].nil?
           options = r[:type][1].split("=")
@@ -87,8 +87,17 @@ module Restwoods
         result[:data][:default]   = r[:default][1] if r[:default].length == 2
         result[:data][:parent]    = r[:parent][-2] if r[:parent].length > 1
         result[:data][:name]      = r[:parent].length == 1 ? r[:default][0] : r[:parent][-1]
-        result[:data][:summary]   = args[([r[:group], r[:type]].compact.inject(0) { |i, n| i + 1 } + 1)..-1].join(' ')
+        result[:data][:summary]   = args[([r[:group], r[:type]].compact.length + 1)..-1].join(' ')
       end
     end
+
+    def res_param(args)
+      res_input(args, :parameter)
+    end
+
+    def res_header(args)
+      res_input(args, :header)
+    end
+
   end
 end

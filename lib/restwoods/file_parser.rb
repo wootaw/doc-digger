@@ -53,12 +53,12 @@ module Restwoods
       line_parser = Restwoods::LineParser.new(str, lang)
       hash = line_parser.parse
       if hash[:type] == :joint
-        case @latest_command[:part]
-        when :parameter
-          process_parameter_command(hash, line_parser)
+        return if @latest_command.nil?
+        if [:parameter, :header].include?(@latest_command[:part])
+          process_resource_attributes(hash, line_parser, "#{@latest_command[:part]}s".to_sym)
         else
           send("process_#{@latest_command[:type]}_command", hash, line_parser)
-        end unless @latest_command.nil?
+        end
       else
         joint_descriptions
         send("process_#{hash[:type]}_command", hash, line_parser)
@@ -71,9 +71,8 @@ module Restwoods
       when :document
         @results.last[:descriptions]
       when :resource
-        case @latest_command[:part]
-        when :parameter
-          @results.last[:resources].last[:parameters].last[:descriptions]
+        if [:parameter, :header].include?(@latest_command[:part])
+          @results.last[:resources].last["#{@latest_command[:part]}s".to_sym].last[:descriptions]
         else
           @results.last[:resources].last[:descriptions]
         end
@@ -84,7 +83,7 @@ module Restwoods
 
     def set_latest_command(hash, parser)
       @latest_command = hash.select { |k, v| k != :data }
-      @latest_command[:space] = parser.start_space
+      @latest_command[:space] = parser.indentation
     end
 
     def process_command(array, hash, parser)
@@ -101,6 +100,7 @@ module Restwoods
         array.last[:descriptions] << []
         array.last[:descriptions].last << hash[:data][:text] unless hash[:data][:text].nil?
       else
+        # ap hash
         s = hash[:text].to_s.gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
         array.last[:descriptions].last << s unless s.length == 0
       end
@@ -113,24 +113,32 @@ module Restwoods
     def process_resource_command(hash, parser)
       @results << {} if @results.length == 0
       @results.last[:resources] = [] unless @results.last.has_key?(:resources)
-      if hash[:part] == :parameter
-        process_parameter_command(hash, parser)
+      if [:parameter, :header].include?(hash[:part])
+        process_resource_attributes(hash, parser, "#{hash[:part]}s".to_sym)
       else
         process_command(@results.last[:resources], hash, parser)
       end
     end
 
-    def process_parameter_command(hash, parser)
+    # def process_parameter_command(hash, parser)
+    #   process_resource_attributes(hash, parser, :parameters)
+    # end
+    #
+    # def process_header_command(hash, parser)
+    #   process_resource_attributes(hash, parser, :headers)
+    # end
+
+    def process_resource_attributes(hash, parser, attr)
       @results << { resources: [] } if @results.length == 0
       res = @results.last[:resources].last
 
       if hash[:type] == :joint
-        res[:parameters].last[:descriptions] = [[]] unless res[:parameters].last.has_key?(:descriptions)
+        res[attr].last[:descriptions] = [[]] unless res[attr].last.has_key?(:descriptions)
         # res[:parameters].last[:descriptions] << []
-        process_command(res[:parameters], hash, parser)
+        process_command(res[attr], hash, parser)
       else
-        res[:parameters] = [] unless res.has_key?(:parameters)
-        res[:parameters] << hash[:data]
+        res[attr] = [] unless res.has_key?(attr)
+        res[attr] << hash[:data]
         set_latest_command(hash, parser)
       end
     end
