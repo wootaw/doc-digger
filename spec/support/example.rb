@@ -1,10 +1,10 @@
 module Example
 =begin
   @doc (document1) Document One
-  @doc_desc detail:
+    This row is a description of this document.
+    Detail: <=#
     This is document of number one.
-    It do not anything. Just to test.
-  @doc_desc
+    It do not anything. Just to test. <=#
       This is the second paragraph of this document description.
     It do not anything, too.
 =end
@@ -15,9 +15,8 @@ module Example
     resource :a_res do
 =begin
       @res get /api/v1/a_res Get list of A
-      @res_desc
-        This resource can get list of A. It can paginate.
-      @res_desc see more:
+        This resource can get list of A. It can paginate. <=#
+        see more: <=#
             This is the second paragraph of this resource description.
         Can not have more describe.
 
@@ -85,6 +84,8 @@ module Example
             puts "Ha Ha Ha"
           end
         ```
+        This is the tail.
+        This is the last row.
       @res_ok {Number[]=1,2,3} c C
         More description about response C.
         Can't write more about response C.
@@ -93,6 +94,7 @@ module Example
         - 100 Message number one
         - 101 Message number two
         - 102 Message number three
+        This is the last row.
       @res_error msg Error message
         This is a row detail,
         See more:
@@ -101,6 +103,8 @@ module Example
           2. Second row
           3. Third row
         - Message two
+        This is the tail.
+        This is the last row.
 =end
       post do
 
@@ -110,8 +114,7 @@ module Example
 
 =begin
   @doc (document2) Document One
-  @doc_desc
-This is document of number two
+    This is document of number two
 =end
   class SubB
     prefix :api

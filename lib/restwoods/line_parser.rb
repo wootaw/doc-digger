@@ -2,6 +2,7 @@ module Restwoods
   class LineParser
 
     PICKS = { java: /\A\s*\*/, erlang: /\A\s*%/, perl: /\A\s*#/ }
+    AMAP  = { param: :parameter, header: :header, ok: :return, error: :error }
 
     def initialize(str, clazz)
       @clazz = clazz
@@ -11,7 +12,7 @@ module Restwoods
 
     def parse
       parts = @str.strip.split(/\s+/)
-      command = parts[0].to_s.match(/\A@((doc(\_desc)?)|(res(\_((desc)|(param)|(header)|(ok)|(error)))?))\Z/)
+      command = parts[0].to_s.match(/\A@(doc|res(\_(param|header|ok|error|depr))?)\Z/)
       if command.nil? || command[1].nil?
         { type: :joint, text: @str }
       else
@@ -25,6 +26,14 @@ module Restwoods
 
     protected
 
+    AMAP.each do |k, v|
+      class_eval <<-CODE
+        def res_#{k}(args)
+          res_io(args, :#{v})
+        end
+      CODE
+    end
+
     def doc(args)
       { type: :document, part: :main }.tap do |result|
         m = args[0].match(/\((\w+)\)/)
@@ -35,27 +44,11 @@ module Restwoods
       end
     end
 
-    def doc_desc(args)
-      {
-        type: :document,
-        part: :description,
-        data: { text: args[0].nil? ? nil : args[0..-1].join(" ") }
-      }
-    end
-
     def res(args)
       {
         type: :resource,
         part: :main,
         data: { method: args[0], route: args[1], summary: args[2..-1].join(" ") }
-      }
-    end
-
-    def res_desc(args)
-      {
-        type: :resource,
-        part: :description,
-        data: { text: args[0].nil? ? nil : args[0..-1].join(" ") }
       }
     end
 
@@ -89,22 +82,6 @@ module Restwoods
         result[:data][:name]      = r[:parent].length == 1 ? r[:default][0] : r[:parent][-1]
         result[:data][:summary]   = args[([r[:group], r[:type]].compact.length + 1)..-1].join(' ')
       end
-    end
-
-    def res_param(args)
-      res_io(args, :parameter)
-    end
-
-    def res_header(args)
-      res_io(args, :header)
-    end
-
-    def res_error(args)
-      res_io(args, :error)
-    end
-
-    def res_ok(args)
-      res_io(args, :return)
     end
 
   end

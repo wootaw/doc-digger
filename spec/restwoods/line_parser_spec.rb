@@ -168,67 +168,6 @@ describe Restwoods::LineParser do
       end
     end
 
-    context "Parse document command @doc_desc" do
-      before(:each) do
-        @c_str = "*  @doc_desc Detail:\n"
-        @coffee_str = "@doc_desc\n"
-        @elixir_str = "  @doc_desc Detail:\n"
-        @erlang_str = "%@doc_desc Detail:\n"
-        @perl_str = "#  @doc_desc See more:\n"
-        @python_str = "  @doc_desc See  more:\n"
-        @ruby_str = "  @doc_desc \n"
-      end
-
-      it "in c" do
-        hash = Restwoods::LineParser.new(@c_str, :java).parse
-        expect(hash[:type]).to eq :document
-        expect(hash[:part]).to eq :description
-        expect(hash[:data][:text]).to eq "Detail:"
-      end
-
-      it "in coffee" do
-        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
-        expect(hash[:type]).to eq :document
-        expect(hash[:part]).to eq :description
-        expect(hash[:data][:text].nil?).to be_truthy
-      end
-
-      it "in elixir" do
-        hash = Restwoods::LineParser.new(@elixir_str, :elixir).parse
-        expect(hash[:type]).to eq :document
-        expect(hash[:part]).to eq :description
-        expect(hash[:data][:text]).to eq("Detail:")
-      end
-
-      it "in erlang" do
-        hash = Restwoods::LineParser.new(@erlang_str, :erlang).parse
-        expect(hash[:type]).to eq :document
-        expect(hash[:part]).to eq :description
-        expect(hash[:data][:text]).to eq("Detail:")
-      end
-
-      it "in perl" do
-        hash = Restwoods::LineParser.new(@perl_str, :perl).parse
-        expect(hash[:type]).to eq :document
-        expect(hash[:part]).to eq :description
-        expect(hash[:data][:text]).to eq("See more:")
-      end
-
-      it "in python" do
-        hash = Restwoods::LineParser.new(@python_str, :python).parse
-        expect(hash[:type]).to eq :document
-        expect(hash[:part]).to eq :description
-        expect(hash[:data][:text]).to eq("See more:")
-      end
-
-      it "in ruby" do
-        hash = Restwoods::LineParser.new(@ruby_str, :ruby).parse
-        expect(hash[:type]).to eq :document
-        expect(hash[:part]).to eq :description
-        expect(hash[:data][:text].nil?).to be_truthy
-      end
-    end
-
     context "Parse document command @res" do
       before(:each) do
         @c_str = "*  @res get /api/v1/a_res Get list of A\n"

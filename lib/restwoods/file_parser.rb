@@ -2,13 +2,14 @@ module Restwoods
   class FileParser
 
     LANGUAGES = {
-      java:   [['/**', '*/'], [".js", ".c", ".java", ".php", ".ts"]],
-      ruby:   [['=begin', '=end'], [".rb"]],
-      perl:   [['#**', '#*'], [".perl", ".pl", ".pm"]],
-      python: [['"""', '"""'], [".py"]],
-      elixir: [['@restwoods """', '"""'], [".ex", ".exs"]],
-      erlang: [['%{', '%}'], [".erl"]],
-      coffee: [['###', '###'], [".coffee"]]
+      java:   [['/**', '*/'], /\A\.(js|jsx|c|cs|java|php?|ts|cpp|go|scala|dart)\Z/],
+      ruby:   [['=begin', '=end'], /\A\.(rb)\Z/],
+      perl:   [['#**', '#*'], /\A\.(perl|pl|pm)\Z/],
+      python: [['"""', '"""'], /\A\.(py)\Z/],
+      elixir: [['@restwoods """', '"""'], /\A\.(ex|exs?)\Z/],
+      erlang: [['%{', '%}'], /\A\.(erl)\Z/],
+      coffee: [['###', '###'], /\A\.(coffee)\Z/],
+      lua:    [['--[[', ']]'], /\A\.(lua)\Z/]
     }
 
     attr_reader :document_name
@@ -33,6 +34,7 @@ module Restwoods
           f.each_line do |s|
             if s.strip == LANGUAGES[lang][0][0]
               started = true
+              @source = false
               next
             end
 
@@ -86,6 +88,13 @@ module Restwoods
       @latest_command[:space] = parser.indentation
     end
 
+    def line_break(descs)
+      if descs.last.is_a?(Array) && descs.last.length > 0
+        descs[-1] = descs.last.join(" ")
+        descs << []
+      end
+    end
+
     def process_command(array, hash, parser)
       array << {} if array.length == 0
 
@@ -93,22 +102,25 @@ module Restwoods
       when :main
         array << {} if array.last.has_key?(:summary)
         array.last.merge!(hash[:data])
-      when :description
         set_latest_command(hash, parser)
-
-        array.last[:descriptions] = [] unless array.last.has_key?(:descriptions)
-        array.last[:descriptions] << []
-        array.last[:descriptions].last << hash[:data][:text] unless hash[:data][:text].nil?
       else
         s = hash[:text].to_s.gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
+        isbreak = /<=#\Z/ === s
+        s = s.gsub(/<=#\Z/, '')
+
         unless s.length == 0
+          array.last[:descriptions] = [] unless array.last.has_key?(:descriptions)
           descs = array.last[:descriptions]
-          if /\A\s*((#+)|>|(\-\s)|(\d+\.))/ === s
-            descs[-1] = descs.last.join(" ") if descs.last.is_a?(Array)
-            descs << [] if descs.last.length > 0
+
+          if /\A\s*(#+|>|\-\s*|\d+\.|`{3})/ === s || @source
+            line_break(descs)
             descs[-1] = s
+            descs << []
+            @source = @source ^ (/\A\s*`{3}/ === s)
           else
-            array.last[:descriptions].last << s
+            descs << [] if descs.last.nil?
+            descs.last << s
+            line_break(descs) if isbreak
           end
         end
       end
@@ -152,7 +164,7 @@ module Restwoods
     end
 
     def check_lang
-      LANGUAGES.each { |l, options| return l if options[1].include?(@ext) }
+      LANGUAGES.each { |l, options| return l if options[1] === @ext }
       nil
     end
 
