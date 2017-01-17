@@ -11,7 +11,7 @@ module Restwoods
 
     def parse
       parts = @str.strip.split(/\s+/)
-      command = parts[0].to_s.match(/\A@((doc(\_desc)?)|(res(\_((desc)|(param)|(header)))?))\Z/)
+      command = parts[0].to_s.match(/\A@((doc(\_desc)?)|(res(\_((desc)|(param)|(header)|(ok)|(error)))?))\Z/)
       if command.nil? || command[1].nil?
         { type: :joint, text: @str }
       else
@@ -69,7 +69,7 @@ module Restwoods
       end
     end
 
-    def res_input(args, part)
+    def res_io(args, part)
       { type: :resource, part: part, data: {} }.tap do |result|
         r = analyze_arguments(args)
         unless r[:type].nil?
@@ -92,11 +92,19 @@ module Restwoods
     end
 
     def res_param(args)
-      res_input(args, :parameter)
+      res_io(args, :parameter)
     end
 
     def res_header(args)
-      res_input(args, :header)
+      res_io(args, :header)
+    end
+
+    def res_error(args)
+      res_io(args, :error)
+    end
+
+    def res_ok(args)
+      res_io(args, :return)
     end
 
   end

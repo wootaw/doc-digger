@@ -74,6 +74,33 @@ module Example
       @res_header (group1) {Number} [obj.count=0] count of Object
 
       @res_param {Boolean} ok A boolean value
+
+      @res_ok (group1) [a] A
+      @res_ok (group1) {String=a,b,c} b B
+        This is the first row.
+        This is the second row.
+        ```ruby
+          b = "a"
+          if b == "a"
+            puts "Ha Ha Ha"
+          end
+        ```
+      @res_ok {Number[]=1,2,3} c C
+        More description about response C.
+        Can't write more about response C.
+
+      @res_error code Error code
+        - 100 Message number one
+        - 101 Message number two
+        - 102 Message number three
+      @res_error msg Error message
+        This is a row detail,
+        See more:
+        - Message one
+          1. First row
+          2. Second row
+          3. Third row
+        - Message two
 =end
       post do
 

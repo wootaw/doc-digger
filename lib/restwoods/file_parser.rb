@@ -54,7 +54,7 @@ module Restwoods
       hash = line_parser.parse
       if hash[:type] == :joint
         return if @latest_command.nil?
-        if [:parameter, :header].include?(@latest_command[:part])
+        if [:parameter, :header, :return, :error].include?(@latest_command[:part])
           process_resource_attributes(hash, line_parser, "#{@latest_command[:part]}s".to_sym)
         else
           send("process_#{@latest_command[:type]}_command", hash, line_parser)
@@ -71,13 +71,13 @@ module Restwoods
       when :document
         @results.last[:descriptions]
       when :resource
-        if [:parameter, :header].include?(@latest_command[:part])
+        if [:parameter, :header, :return, :error].include?(@latest_command[:part])
           @results.last[:resources].last["#{@latest_command[:part]}s".to_sym].last[:descriptions]
         else
           @results.last[:resources].last[:descriptions]
         end
       end
-      descs[-1] = descs.last.join(" ") unless descs.nil?
+      descs[-1] = descs.last.join(" ") if !descs.nil? && descs.last.is_a?(Array)
       @latest_command = nil
     end
 
@@ -100,9 +100,17 @@ module Restwoods
         array.last[:descriptions] << []
         array.last[:descriptions].last << hash[:data][:text] unless hash[:data][:text].nil?
       else
-        # ap hash
         s = hash[:text].to_s.gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
-        array.last[:descriptions].last << s unless s.length == 0
+        unless s.length == 0
+          descs = array.last[:descriptions]
+          if /\A\s*((#+)|>|(\-\s)|(\d+\.))/ === s
+            descs[-1] = descs.last.join(" ") if descs.last.is_a?(Array)
+            descs << [] if descs.last.length > 0
+            descs[-1] = s
+          else
+            array.last[:descriptions].last << s
+          end
+        end
       end
     end
 
@@ -113,7 +121,7 @@ module Restwoods
     def process_resource_command(hash, parser)
       @results << {} if @results.length == 0
       @results.last[:resources] = [] unless @results.last.has_key?(:resources)
-      if [:parameter, :header].include?(hash[:part])
+      if [:parameter, :header, :return, :error].include?(hash[:part])
         process_resource_attributes(hash, parser, "#{hash[:part]}s".to_sym)
       else
         process_command(@results.last[:resources], hash, parser)
