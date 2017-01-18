@@ -53,12 +53,17 @@ module Restwoods
       hash = line_parser.parse
       if hash[:type] == :joint
         return if @latest_command.nil?
-        if [:parameter, :header, :return, :error].include?(@latest_command[:part])
-          item = @results.last[:resources].last["#{@latest_command[:part]}s".to_sym].last
-          process_descriptions(item, hash)
-        else
-          send("process_#{@latest_command[:type]}_command", hash, line_parser)
+        item = @results.last
+        item = item[:resources].last if @latest_command[:type] == :res
+
+        case @latest_command[:part]
+        when :state
+          item = item[:state]
+        when /\A(param|header|return|error)\Z/
+          item = item["#{@latest_command[:part]}s".to_sym].last
         end
+
+        process_descriptions(item, hash)
       else
         send("process_#{hash[:type]}_command", hash, line_parser)
       end
@@ -68,23 +73,18 @@ module Restwoods
       case hash[:part]
       when :state
         item[:state] = hash[:data]
-      when nil
-        process_descriptions(item, hash)
       else
         item.merge!(hash[:data])
       end
-
-      unless hash[:type] == :joint
-        set_latest_command(hash, parser)
-      end
+      set_latest_command(hash, parser)
     end
 
-    def process_document_command(hash, parser)
+    def process_doc_command(hash, parser)
       @results << {} if @results.length == 0 || @results.last.has_key?(:summary) && hash[:part] == :main
       process_attributes(@results.last, hash, parser)
     end
 
-    def process_resource_command(hash, parser)
+    def process_res_command(hash, parser)
       @results << {} if @results.length == 0
       @results.last[:resources] = [] unless @results.last.has_key?(:resources)
 
@@ -92,7 +92,7 @@ module Restwoods
       when :main
         @results.last[:resources] << {}
         @results.last[:resources].last
-      when /\A(parameter|header|return|error)\Z/
+      when /\A(param|header|return|error)\Z/
         part = "#{hash[:part]}s".to_sym
         @results.last[:resources].last[part] = [] unless @results.last[:resources].last.has_key?(part)
         @results.last[:resources].last[part] << {}

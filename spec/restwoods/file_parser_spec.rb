@@ -52,15 +52,15 @@ describe Restwoods::FileParser do
       end
 
       it "The first resource should have 21 parameters" do
-        expect(@ruby_hash[0][:resources][0][:parameters].length).to eq 21
+        expect(@ruby_hash[0][:resources][0][:params].length).to eq 21
       end
 
       it "The first parameter of the first resource should have 6 attributes" do
-        expect(@ruby_hash[0][:resources][0][:parameters][0].size).to eq 6
+        expect(@ruby_hash[0][:resources][0][:params][0].size).to eq 6
       end
 
       it "The last parameter of the first resource should have 8 attributes" do
-        expect(@ruby_hash[0][:resources][0][:parameters].last.size).to eq 8
+        expect(@ruby_hash[0][:resources][0][:params].last.size).to eq 8
       end
 
       it "The second resource should have 6 headers" do
@@ -81,6 +81,18 @@ describe Restwoods::FileParser do
 
       it "The description of the second error field of the second resource should have 7 part" do
         expect(@ruby_hash[0][:resources][1][:errors][1][:descriptions].length).to eq 7
+      end
+
+      it "The state of the last document should be deprecated" do
+        expect(@ruby_hash.last[:state][:name]).to eq "deprecated"
+        expect(@ruby_hash.last[:state][:summary]).to eq "This document is deprecated"
+        expect(@ruby_hash.last[:state][:descriptions].length).to eq 2
+      end
+
+      it "The state of the third resource should be coming" do
+        expect(@ruby_hash[1][:resources][0][:state][:name]).to eq "coming"
+        expect(@ruby_hash[1][:resources][0][:state][:summary]).to eq "This resource will be coming soon"
+        expect(@ruby_hash[1][:resources][0][:state][:descriptions].length).to eq 2
       end
 
     end

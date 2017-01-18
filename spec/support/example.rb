@@ -76,8 +76,8 @@ module Example
 
       @res_param {Boolean} ok A boolean value
 
-      @res_ok (group1) [a] A
-      @res_ok (group1) {String=a,b,c} b B
+      @res_return (group1) [a] A
+      @res_return (group1) {String=a,b,c} b B
         This is the first row.
         This is the second row.
         ```ruby
@@ -88,7 +88,7 @@ module Example
         ```
         This is the tail.
         This is the last row.
-      @res_ok {Number[]=1,2,3} c C
+      @res_return {Number[]=1,2,3} c C
         More description about response C.
         Can't write more about response C.
 
@@ -125,7 +125,11 @@ module Example
 
     resource :b_res do
 =begin
-  @res post /api/v2/b_res Get list of A
+      @res post /api/v2/b_res Get list of A
+      @res_state coming This resource will be coming soon
+        The first row description of resource state
+        The second row description of resource state. <=#
+        The third row description of resource state
 =end
       post do
 
@@ -135,6 +139,10 @@ module Example
 
 =begin
   @doc Other Document
+  @doc_state deprecated This document is deprecated
+  The first row description of document state. <=#
+  The second row description of document state.
+  The third row description of document state
 =end
   class Other
 

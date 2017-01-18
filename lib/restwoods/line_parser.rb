@@ -2,7 +2,6 @@ module Restwoods
   class LineParser
 
     PICKS = { java: /\A\s*\*/, erlang: /\A\s*%/, perl: /\A\s*#/ }
-    AMAP  = { param: :parameter, header: :header, ok: :return, error: :error }
 
     def initialize(str, clazz)
       @clazz = clazz
@@ -12,11 +11,11 @@ module Restwoods
 
     def parse
       parts = @str.strip.split(/\s+/)
-      command = parts[0].to_s.match(/\A@(doc|res(\_(param|header|ok|error|state))?)\Z/)
+      command = parts[0].to_s.match(/\A@((doc)(\_state)?|(res)(\_(param|header|return|error|state))?)\Z/)
       if command.nil? || command[1].nil?
         { type: :joint, text: @str }
       else
-        send(command[1], parts[1..-1])
+        send(command[1], parts[1..-1], command)
       end
     end
 
@@ -26,16 +25,8 @@ module Restwoods
 
     protected
 
-    AMAP.each do |k, v|
-      class_eval <<-CODE
-        def res_#{k}(args)
-          res_io(args, :#{v})
-        end
-      CODE
-    end
-
-    def doc(args)
-      { type: :document, part: :main }.tap do |result|
+    def doc(args, cmd)
+      { type: :doc, part: :main }.tap do |result|
         m = args[0].match(/\((\w+)\)/)
         result[:data] = {
           summary: args[(m.nil? ? 0 : 1)..-1].join(" "),
@@ -44,19 +35,19 @@ module Restwoods
       end
     end
 
-    def res(args)
+    def res(args, cmd)
       {
-        type: :resource,
+        type: :res,
         part: :main,
         data: { method: args[0], route: args[1], summary: args[2..-1].join(" ") }
       }
     end
 
-    def res_state(args)
+    def state(args, cmd)
       {
-        type: :resource,
+        type: cmd[1].split("_")[0].to_sym,
         part: :state,
-        data: { state: args[0], summary: args[1..-1].join(" ") }
+        data: { name: args[0], summary: args[1..-1].join(" ") }
       }
     end
 
@@ -70,8 +61,8 @@ module Restwoods
       end
     end
 
-    def res_io(args, part)
-      { type: :resource, part: part, data: {} }.tap do |result|
+    def res_io(args, cmd)
+      { type: :res, part: cmd[6].to_sym, data: {} }.tap do |result|
         r = analyze_arguments(args)
         unless r[:type].nil?
           options = r[:type][1].split("=")
@@ -92,5 +83,12 @@ module Restwoods
       end
     end
 
+    alias_method :res_param,  :res_io
+    alias_method :res_header, :res_io
+    alias_method :res_return, :res_io
+    alias_method :res_error,  :res_io
+
+    alias_method :doc_state,  :state
+    alias_method :res_state,  :state
   end
 end
