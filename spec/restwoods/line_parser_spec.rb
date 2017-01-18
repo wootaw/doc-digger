@@ -196,8 +196,8 @@ describe Restwoods::LineParser do
         @coffee_str = "  @res_param {String=a,b,c} [str=b] Allowed values\n"
         @perl_str = "#  @res_param (group1) {Object} obj An Object value\n"
         @python_str = "  @res_param (group1) {String} obj.name name of Object\n"
-        @erlang_str = "%  @res_param {Number[]} [obj.num] num of Object\n"
-        @elixir_str = "  @res_param  [obj.val=0] A value\n"
+        @erlang_str = "%  @res_param {Object[]} [obj.data] data of Object\n"
+        @elixir_str = "  @res_param  [obj.data.val=0] A value\n"
         @ruby_str = "  @res_param {Number[]=2,3,4} num_z=3 Number Z\n"
       end
 
@@ -241,7 +241,7 @@ describe Restwoods::LineParser do
         expect(hash[:data][:summary]).to eq "A value"
         expect(hash[:data][:required]).not_to be_truthy
         expect(hash[:data][:array]).not_to be_truthy
-        expect(hash[:data][:parent]).to eq "obj"
+        expect(hash[:data][:parent]).to match_array ["obj", "data"]
         expect(hash[:data][:default]).to eq "0"
         expect(hash[:data][:options].nil?).to be_truthy
       end
@@ -251,12 +251,12 @@ describe Restwoods::LineParser do
         expect(hash[:type]).to eq :resource
         expect(hash[:part]).to eq :parameter
         expect(hash[:data][:group].nil?).to be_truthy
-        expect(hash[:data][:type]).to eq "Number"
-        expect(hash[:data][:name]).to eq "num"
-        expect(hash[:data][:summary]).to eq "num of Object"
+        expect(hash[:data][:type]).to eq "Object"
+        expect(hash[:data][:name]).to eq "data"
+        expect(hash[:data][:summary]).to eq "data of Object"
         expect(hash[:data][:required]).not_to be_truthy
         expect(hash[:data][:array]).to be_truthy
-        expect(hash[:data][:parent]).to eq "obj"
+        expect(hash[:data][:parent]).to eq ["obj"]
         expect(hash[:data][:default].nil?).to be_truthy
         expect(hash[:data][:options].nil?).to be_truthy
       end
@@ -286,7 +286,7 @@ describe Restwoods::LineParser do
         expect(hash[:data][:summary]).to eq "name of Object"
         expect(hash[:data][:required]).to be_truthy
         expect(hash[:data][:array]).not_to be_truthy
-        expect(hash[:data][:parent]).to eq "obj"
+        expect(hash[:data][:parent]).to eq ["obj"]
         expect(hash[:data][:default].nil?).to be_truthy
         expect(hash[:data][:options].nil?).to be_truthy
       end
@@ -358,7 +358,7 @@ describe Restwoods::LineParser do
         expect(hash[:data][:summary]).to eq "A value"
         expect(hash[:data][:required]).not_to be_truthy
         expect(hash[:data][:array]).not_to be_truthy
-        expect(hash[:data][:parent]).to eq "obj"
+        expect(hash[:data][:parent]).to eq ["obj"]
         expect(hash[:data][:default]).to eq "0"
         expect(hash[:data][:options].nil?).to be_truthy
       end
@@ -373,7 +373,7 @@ describe Restwoods::LineParser do
         expect(hash[:data][:summary]).to eq "num of Object"
         expect(hash[:data][:required]).not_to be_truthy
         expect(hash[:data][:array]).to be_truthy
-        expect(hash[:data][:parent]).to eq "obj"
+        expect(hash[:data][:parent]).to eq ["obj"]
         expect(hash[:data][:default].nil?).to be_truthy
         expect(hash[:data][:options].nil?).to be_truthy
       end
@@ -403,7 +403,7 @@ describe Restwoods::LineParser do
         expect(hash[:data][:summary]).to eq "name of Object"
         expect(hash[:data][:required]).to be_truthy
         expect(hash[:data][:array]).not_to be_truthy
-        expect(hash[:data][:parent]).to eq "obj"
+        expect(hash[:data][:parent]).to eq ["obj"]
         expect(hash[:data][:default].nil?).to be_truthy
         expect(hash[:data][:options].nil?).to be_truthy
       end

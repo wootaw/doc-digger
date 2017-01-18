@@ -61,6 +61,8 @@ module Example
 
 =begin
       @res post /api/v1/a_res Create an A resource
+      @res_state coming Coming Soon
+        This resource is not finish
 
       @res_header [a] A
       @res_header {String=a,b,c} b B
@@ -132,7 +134,7 @@ module Example
   end
 
 =begin
-  @doc other_document
+  @doc Other Document
 =end
   class Other
 

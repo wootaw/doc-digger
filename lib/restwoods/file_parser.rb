@@ -38,10 +38,7 @@ module Restwoods
               next
             end
 
-            if started && s.strip == LANGUAGES[lang][0][1]
-              started = false
-              joint_descriptions
-            end
+            started = false if started && s.strip == LANGUAGES[lang][0][1]
             process_line(s) if started
           end
         end
@@ -57,110 +54,79 @@ module Restwoods
       if hash[:type] == :joint
         return if @latest_command.nil?
         if [:parameter, :header, :return, :error].include?(@latest_command[:part])
-          process_resource_attributes(hash, line_parser, "#{@latest_command[:part]}s".to_sym)
+          item = @results.last[:resources].last["#{@latest_command[:part]}s".to_sym].last
+          process_descriptions(item, hash)
         else
           send("process_#{@latest_command[:type]}_command", hash, line_parser)
         end
       else
-        joint_descriptions
         send("process_#{hash[:type]}_command", hash, line_parser)
       end
     end
 
-    def joint_descriptions
-      return if @latest_command.nil?
-      descs = case @latest_command[:type]
-      when :document
-        @results.last[:descriptions]
-      when :resource
-        if [:parameter, :header, :return, :error].include?(@latest_command[:part])
-          @results.last[:resources].last["#{@latest_command[:part]}s".to_sym].last[:descriptions]
-        else
-          @results.last[:resources].last[:descriptions]
-        end
-      end
-      descs[-1] = descs.last.join(" ") if !descs.nil? && descs.last.is_a?(Array)
-      @latest_command = nil
-    end
-
-    def set_latest_command(hash, parser)
-      @latest_command = hash.select { |k, v| k != :data }
-      @latest_command[:space] = parser.indentation
-    end
-
-    def line_break(descs)
-      if descs.last.is_a?(Array) && descs.last.length > 0
-        descs[-1] = descs.last.join(" ")
-        descs << []
-      end
-    end
-
-    def process_command(array, hash, parser)
-      array << {} if array.length == 0
-
+    def process_attributes(item, hash, parser)
       case hash[:part]
-      when :main
-        array << {} if array.last.has_key?(:summary)
-        array.last.merge!(hash[:data])
-        set_latest_command(hash, parser)
+      when :state
+        item[:state] = hash[:data]
+      when nil
+        process_descriptions(item, hash)
       else
-        s = hash[:text].to_s.gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
-        isbreak = /<=#\Z/ === s
-        s = s.gsub(/<=#\Z/, '')
+        item.merge!(hash[:data])
+      end
 
-        unless s.length == 0
-          array.last[:descriptions] = [] unless array.last.has_key?(:descriptions)
-          descs = array.last[:descriptions]
-
-          if /\A\s*(#+|>|\-\s*|\d+\.|`{3})/ === s || @source
-            line_break(descs)
-            descs[-1] = s
-            descs << []
-            @source = @source ^ (/\A\s*`{3}/ === s)
-          else
-            descs << [] if descs.last.nil?
-            descs.last << s
-            line_break(descs) if isbreak
-          end
-        end
+      unless hash[:type] == :joint
+        set_latest_command(hash, parser)
       end
     end
 
     def process_document_command(hash, parser)
-      process_command(@results, hash, parser)
+      @results << {} if @results.length == 0 || @results.last.has_key?(:summary) && hash[:part] == :main
+      process_attributes(@results.last, hash, parser)
     end
 
     def process_resource_command(hash, parser)
       @results << {} if @results.length == 0
       @results.last[:resources] = [] unless @results.last.has_key?(:resources)
-      if [:parameter, :header, :return, :error].include?(hash[:part])
-        process_resource_attributes(hash, parser, "#{hash[:part]}s".to_sym)
+
+      item = case hash[:part]
+      when :main
+        @results.last[:resources] << {}
+        @results.last[:resources].last
+      when /\A(parameter|header|return|error)\Z/
+        part = "#{hash[:part]}s".to_sym
+        @results.last[:resources].last[part] = [] unless @results.last[:resources].last.has_key?(part)
+        @results.last[:resources].last[part] << {}
+        @results.last[:resources].last[part].last
       else
-        process_command(@results.last[:resources], hash, parser)
+        @results.last[:resources].last
+      end
+
+      process_attributes(item, hash, parser)
+    end
+
+    def process_descriptions(item, hash)
+      s = hash[:text].to_s.gsub(/\A\s{,#{@latest_command[:space] + 2}}/, '').rstrip
+      linebreak = /(.*)(<=#)\Z/.match(s)
+      s = linebreak[1].rstrip unless linebreak.nil?
+
+      unless s.length == 0
+        item[:descriptions] = [[]] unless item.has_key?(:descriptions)
+        descs = item[:descriptions]
+
+        if /\A\s*(#+|>|\-\s*|\d+\.|`{3})/ === s || @source
+          descs.pop if descs.last.length == 0
+          descs.push([s], [])
+          @source = @source ^ (/\A\s*`{3}/ === s)
+        else
+          descs.last << s
+          descs << [] unless linebreak.nil?
+        end
       end
     end
 
-    # def process_parameter_command(hash, parser)
-    #   process_resource_attributes(hash, parser, :parameters)
-    # end
-    #
-    # def process_header_command(hash, parser)
-    #   process_resource_attributes(hash, parser, :headers)
-    # end
-
-    def process_resource_attributes(hash, parser, attr)
-      @results << { resources: [] } if @results.length == 0
-      res = @results.last[:resources].last
-
-      if hash[:type] == :joint
-        res[attr].last[:descriptions] = [[]] unless res[attr].last.has_key?(:descriptions)
-        # res[:parameters].last[:descriptions] << []
-        process_command(res[attr], hash, parser)
-      else
-        res[attr] = [] unless res.has_key?(attr)
-        res[attr] << hash[:data]
-        set_latest_command(hash, parser)
-      end
+    def set_latest_command(hash, parser)
+      @latest_command = hash.select { |k, v| k != :data }
+      @latest_command[:space] = parser.indentation
     end
 
     def check_lang

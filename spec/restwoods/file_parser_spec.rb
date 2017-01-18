@@ -55,6 +55,14 @@ describe Restwoods::FileParser do
         expect(@ruby_hash[0][:resources][0][:parameters].length).to eq 21
       end
 
+      it "The first parameter of the first resource should have 6 attributes" do
+        expect(@ruby_hash[0][:resources][0][:parameters][0].size).to eq 6
+      end
+
+      it "The last parameter of the first resource should have 8 attributes" do
+        expect(@ruby_hash[0][:resources][0][:parameters].last.size).to eq 8
+      end
+
       it "The second resource should have 6 headers" do
         expect(@ruby_hash[0][:resources][1][:headers].length).to eq 6
       end
@@ -74,6 +82,7 @@ describe Restwoods::FileParser do
       it "The description of the second error field of the second resource should have 7 part" do
         expect(@ruby_hash[0][:resources][1][:errors][1][:descriptions].length).to eq 7
       end
+
     end
 
   end

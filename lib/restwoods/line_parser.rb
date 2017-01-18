@@ -12,7 +12,7 @@ module Restwoods
 
     def parse
       parts = @str.strip.split(/\s+/)
-      command = parts[0].to_s.match(/\A@(doc|res(\_(param|header|ok|error|depr))?)\Z/)
+      command = parts[0].to_s.match(/\A@(doc|res(\_(param|header|ok|error|state))?)\Z/)
       if command.nil? || command[1].nil?
         { type: :joint, text: @str }
       else
@@ -52,6 +52,14 @@ module Restwoods
       }
     end
 
+    def res_state(args)
+      {
+        type: :resource,
+        part: :state,
+        data: { state: args[0], summary: args[1..-1].join(" ") }
+      }
+    end
+
     def analyze_arguments(args)
       { group: args[0].to_s.match(/\((\w+)\)/) }.tap do |r|
         r[:type]    = (r[:group].nil? ? args[0] : args[1]).to_s.match(/\{(.+)\}/)
@@ -78,7 +86,7 @@ module Restwoods
         result[:data][:group]     = r[:group][1] unless r[:group].nil?
         result[:data][:required]  = r[:name].nil?
         result[:data][:default]   = r[:default][1] if r[:default].length == 2
-        result[:data][:parent]    = r[:parent][-2] if r[:parent].length > 1
+        result[:data][:parent]    = r[:parent][0..-2] if r[:parent].length > 1
         result[:data][:name]      = r[:parent].length == 1 ? r[:default][0] : r[:parent][-1]
         result[:data][:summary]   = args[([r[:group], r[:type]].compact.length + 1)..-1].join(' ')
       end
