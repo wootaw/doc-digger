@@ -53,55 +53,39 @@ module Restwoods
       hash = line_parser.parse
       if hash[:type] == :joint
         return if @latest_command.nil?
-        item = @results.last
-        item = item[:resources].last if @latest_command[:type] == :res
+        process_descriptions(branch(@latest_command), hash)
+      else
+        branch(hash, true).merge!(hash[:data])
+        @latest_command = hash.select { |k, v| k != :data }
+        @latest_command[:space] = line_parser.indentation
+      end
+    end
 
-        case @latest_command[:part]
-        when :state
-          item = item[:state]
-        when /\A(param|header|return|error)\Z/
-          item = item["#{@latest_command[:part]}s".to_sym].last
+    def branch(command, initial=false)
+      @results << {} if initial && (@results.length == 0 || command[:type] == :doc && command[:part] == :main)
+      item = @results.last
+
+      if command[:type] == :res
+        if initial
+          item[:resources] = [] unless item.has_key?(:resources)
+          item[:resources] << {} if command[:part] == :main
         end
-
-        process_descriptions(item, hash)
-      else
-        send("process_#{hash[:type]}_command", hash, line_parser)
+        item = item[:resources].last
       end
-    end
 
-    def process_attributes(item, hash, parser)
-      case hash[:part]
+      case command[:part]
       when :state
-        item[:state] = hash[:data]
-      else
-        item.merge!(hash[:data])
-      end
-      set_latest_command(hash, parser)
-    end
-
-    def process_doc_command(hash, parser)
-      @results << {} if @results.length == 0 || @results.last.has_key?(:summary) && hash[:part] == :main
-      process_attributes(@results.last, hash, parser)
-    end
-
-    def process_res_command(hash, parser)
-      @results << {} if @results.length == 0
-      @results.last[:resources] = [] unless @results.last.has_key?(:resources)
-
-      item = case hash[:part]
-      when :main
-        @results.last[:resources] << {}
-        @results.last[:resources].last
+        item[:state] = {} if initial && !item.has_key?(:state)
+        item = item[:state]
       when /\A(param|header|return|error)\Z/
-        part = "#{hash[:part]}s".to_sym
-        @results.last[:resources].last[part] = [] unless @results.last[:resources].last.has_key?(part)
-        @results.last[:resources].last[part] << {}
-        @results.last[:resources].last[part].last
-      else
-        @results.last[:resources].last
+        part = "#{command[:part]}s".to_sym
+        if initial
+          item[part] = [] unless item.has_key?(part)
+          item[part] << {}
+        end
+        item = item[part].last
       end
-
-      process_attributes(item, hash, parser)
+      item
     end
 
     def process_descriptions(item, hash)
@@ -122,11 +106,6 @@ module Restwoods
           descs << [] unless linebreak.nil?
         end
       end
-    end
-
-    def set_latest_command(hash, parser)
-      @latest_command = hash.select { |k, v| k != :data }
-      @latest_command[:space] = parser.indentation
     end
 
     def check_lang
