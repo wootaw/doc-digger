@@ -91,7 +91,7 @@ describe Restwoods::FileParser do
 
       it "The state of the last document should be deprecated" do
         expect(@ruby_hash.last[:state][:name]).to eq "deprecated"
-        expect(@ruby_hash.last[:state][:summary]).to eq "This document is deprecated"
+        expect(@ruby_hash.last[:state][:summary]).to eq ""
         expect(@ruby_hash.last[:state][:descriptions].length).to eq 2
       end
 

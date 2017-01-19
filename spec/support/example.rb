@@ -139,7 +139,7 @@ module Example
 
 =begin
   @doc Other Document
-  @doc_state deprecated This document is deprecated
+  @doc_state deprecated
   The first row description of document state. <=#
   The second row description of document state.
   The third row description of document state

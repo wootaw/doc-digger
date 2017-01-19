@@ -20,9 +20,92 @@ Or install it yourself as:
 
     $ gem install restwoods
 
-## Usage
+## Basic Usage
 
-TODO: Write usage instructions here
+RESTWoods is a tool for generating RESTful web API documentation by analyzing block comments. Below is a simple example showing some of the more common features of RESTWoods in documenting parts of the Twitter API that created by Grape.
+
+```ruby
+module Twitter
+
+=begin
+  @doc (twitter) Twitter
+    This row is a description of this document.
+    Detail: <=#
+    This is document of number one.
+    It do not anything. Just to at here. <=#
+    This is the second paragraph of this document description.
+    It do not anything, too.
+=end
+  class API < Grape::API
+    version 'v1'
+    format :json
+    prefix :api
+
+    resource :statuses do
+=begin
+      @res get /api/v1/statuses/public_timeline Return a public timeline
+
+      @res_return {Object[]} data Status List
+      @res_return {String} data.id Status ID
+      @res_return {String} data.status Your status
+=end
+      get :public_timeline do
+      end
+
+=begin
+      @res get /api/v1/statuses/home_timeline Return a personal timeline
+      @res_error (401) msg 401 Unauthorized
+
+      @res_return {Object[]} data Status List
+      @res_return {String} data.id Status ID
+      @res_return {String} data.status Your status
+=end
+      get :home_timeline do
+      end
+
+=begin
+      @res get /api/v1/statuses/:id Return a status
+      @res_param {Number} id Status id
+
+      @res_return {String} id Status ID
+      @res_return {String} status Your status
+
+      @res_state deprecated
+=end
+      route_param :id do
+        get do
+        end
+      end
+
+=begin
+      @res post /api/v1/statuses Create a status
+      @res_param {String} status Your status
+      @res_error (401) msg 401 Unauthorized
+=end
+      post do
+      end
+
+=begin
+      @res put /api/v1/statuses/:id Update a status
+      @res_param {String} id Status ID
+      @res_param {String} status Your status
+      @res_error (401) msg 401 Unauthorized
+=end
+      put ':id' do
+      end
+
+=begin
+      @res delete /api/v1/statuses/:id Delete a status
+      @res_param {String} id Status ID
+      @res_error (401) msg 401 Unauthorized
+      @res_state coming This resource will be coming soon
+=end
+      delete ':id' do
+      end
+    end
+  end
+end
+```
 
 ## Development
 
