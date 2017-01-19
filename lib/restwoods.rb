@@ -1,3 +1,5 @@
+require "base64"
+require "json"
 require "restwoods/version"
 require "restwoods/line_parser"
 require "restwoods/file_parser"

@@ -447,5 +447,29 @@ describe Restwoods::LineParser do
       end
     end
 
+    context "Parse resource command @res_bind" do
+      before(:each) do
+        @java_str = "*  @res_bind (param) least num_a,num_b,num_c 1\n"
+        @coffee_str = "  @res_bind only num_a,num_b,num_c 2\n"
+      end
+
+      it "in java" do
+        hash = Restwoods::LineParser.new(@java_str, :java).parse
+        expect(hash[:type]).to eq :res
+        expect(hash[:part]).to eq :bind
+        expect(hash[:data][:scope]).to eq "param"
+        expect(hash[:data][:command]).to eq "least"
+        expect(hash[:data][:vars]).to eq ["num_a,num_b,num_c", "1"]
+      end
+
+      it "in coffee" do
+        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        expect(hash[:type]).to eq :res
+        expect(hash[:part]).to eq :bind
+        expect(hash[:data][:scope].nil?).to be_truthy
+        expect(hash[:data][:command]).to eq "only"
+        expect(hash[:data][:vars]).to eq ["num_a,num_b,num_c", "2"]
+      end
+    end
   end
 end

@@ -11,7 +11,7 @@ module Restwoods
 
     def parse
       parts = @str.strip.split(/\s+/)
-      command = parts[0].to_s.match(/\A@((doc)(\_state)?|(res)(\_(param|header|return|error|state))?)\Z/)
+      command = parts[0].to_s.match(/\A@((doc)(\_state)?|(res)(\_(param|header|return|error|state|bind))?)\Z/)
       if command.nil? || command[1].nil?
         { type: :joint, text: @str }
       else
@@ -26,12 +26,10 @@ module Restwoods
     protected
 
     def doc(args, cmd)
-      { type: :doc, part: :main }.tap do |result|
+      { type: :doc, part: :main, data: {} }.tap do |result|
         m = args[0].match(/\((\w+)\)/)
-        result[:data] = {
-          summary: args[(m.nil? ? 0 : 1)..-1].join(" "),
-          name: m.nil? ? nil : m[1]
-        }
+        result[:data][:summary] = args[[m].compact.length..-1].join(" ")
+        result[:data][:name]    = m[1] unless m.nil?
       end
     end
 
@@ -41,6 +39,15 @@ module Restwoods
         part: :main,
         data: { method: args[0], route: args[1], summary: args[2..-1].join(" ") }
       }
+    end
+
+    def res_bind(args, cmd)
+      { type: :res, part: :bind, data: {} }.tap do |result|
+        m = args[0].match(/\((param|header|return|error)\)/)
+        result[:data][:scope]   = m[1] unless m.nil?
+        result[:data][:command] = args[[m].compact.length]
+        result[:data][:vars]    = args[([m].compact.length + 1)..-1]
+      end
     end
 
     def state(args, cmd)

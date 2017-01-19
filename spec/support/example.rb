@@ -30,22 +30,22 @@ module Example
       @res_param {Number} [num_a] A Number value
       @res_param {Number} [num_b] A Number value, too.
       @res_param {Number} [num_c] A Number value, again.
-      @res_param_bind least num_a,num_b,num_c 1
+      @res_bind (param) least num_a,num_b,num_c 1
 
       @res_param {Number} [num_x] Number X
       @res_param {Number} [num_y] Number Y
       @res_param {Number} [num_z=3] Number Z
-      @res_param_bind only num_a,num_b,num_c 2
+      @res_bind only num_a,num_b,num_c 2
 
       @res_param {String} [str_a] A String value
       @res_param {String} [str_b] A String value, too.
       @res_param {String} [str_c] A String value, again.
-      @res_param_bind given str_a str_b,str_c
+      @res_bind (param) given str_a str_b,str_c
 
       @res_param {String[]} [str_x] X
       @res_param {String} [str_y] Y
       @res_param [z] Z
-      @res_param_bind entire str_x,str_y,z
+      @res_bind entire str_x,str_y,z
 
       @res_param (group1) {Object} obj An Object value
       @res_param (group1) {String} obj.name name of Object

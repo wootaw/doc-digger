@@ -23,14 +23,16 @@ describe Restwoods::FileParser do
   describe ".parse" do
 
     before(:each) do
-      @txt_hash = @txt_parser.parse
-      @ruby_hash = @rb_parser.parse
+      @txt_hash = @txt_parser.results
+      @ruby_hash = @rb_parser.results
     end
 
     context "When open a file that the parser can't support" do
       it "Should be returns a array of without element" do
         expect(@txt_hash.length).to eq 0
         ap @ruby_hash
+
+        # ap Base64.urlsafe_encode64(@ruby_hash.to_json)
       end
     end
 
@@ -53,6 +55,10 @@ describe Restwoods::FileParser do
 
       it "The first resource should have 21 parameters" do
         expect(@ruby_hash[0][:resources][0][:params].length).to eq 21
+      end
+
+      it "The first resource should have 4 binds" do
+        expect(@ruby_hash[0][:resources][0][:binds].length).to eq 4
       end
 
       it "The first parameter of the first resource should have 6 attributes" do
