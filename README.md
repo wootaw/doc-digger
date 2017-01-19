@@ -103,7 +103,63 @@ module Twitter
   end
 end
 ```
+## Supported Programming Languages
 
+- Java, JavaScript, C#, Go, Dart, PHP, Scala (all DocStyle capable languages):
+```c
+/**
+ * @doc (twitter) Twitter
+ */
+```
+
+- ruby
+```ruby
+=begin
+  @doc (twitter) Twitter
+=end
+```
+
+- perl
+```perl
+#**
+# @doc (twitter) Twitter
+#*
+```
+
+- python
+```python
+"""
+  @doc (twitter) Twitter
+"""
+```
+
+- elixir
+```elixir
+@restwoods """
+  @doc (twitter) Twitter
+"""
+```
+
+- coffee
+```coffee
+###
+  @doc (twitter) Twitter
+###
+```
+
+- lua
+```lua
+--[[
+  @doc (twitter) Twitter
+]]
+```
+
+- erlang
+```erlang
+%{
+%  @doc (twitter) Twitter
+%}
+```
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
