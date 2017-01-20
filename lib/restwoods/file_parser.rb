@@ -11,6 +11,7 @@ module Restwoods
       coffee: [['###', '###'], /\A\.(coffee)\Z/],
       lua:    [['--[[', ']]'], /\A\.(lua)\Z/]
     }
+    MARKDOWNS = /\A\s*(#+|>|\-\s*|\d+\.|`{3})/
 
     attr_reader :document_name
 
@@ -57,7 +58,7 @@ module Restwoods
         process_descriptions(branch(@recent_command), hash)
       else
         branch(hash, true).merge!(hash[:data])
-        @recent_command = hash.select { |k, v| k != :data }
+        @recent_command = hash.select { |k| k != :data }
         @recent_command[:space] = line_parser.indentation
         @linebreak = false
       end
@@ -96,7 +97,7 @@ module Restwoods
         @linebreak = true
         return
       end
-      markdown = /\A\s*(#+|>|\-\s*|\d+\.|`{3})/ === text || @source
+      markdown = MARKDOWNS === text || @source
       @source ^= /\A\s*`{3}/ === text if markdown
 
       item[:descriptions] = [[]] unless item.has_key?(:descriptions)

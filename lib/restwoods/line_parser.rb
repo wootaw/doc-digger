@@ -2,6 +2,7 @@ module Restwoods
   class LineParser
 
     PICKS = { java: /\A\s*\*/, erlang: /\A\s*%/, perl: /\A\s*#/ }
+    COMMANDS = /\A@(doc(\_state)?|res(\_(param|header|return|error|state|bind))?|cmd\_(def|use))\Z/
 
     def initialize(str, clazz)
       @clazz = clazz
@@ -11,7 +12,7 @@ module Restwoods
 
     def parse
       parts = @str.strip.split(/\s+/)
-      command = parts[0].to_s.match(/\A@((doc)(\_state)?|(res)(\_(param|header|return|error|state|bind))?)\Z/)
+      command = parts[0].to_s.match(COMMANDS)
       if command.nil? || command[1].nil?
         { type: :joint, text: @str }
       else
@@ -25,7 +26,11 @@ module Restwoods
 
     protected
 
-    def doc(args, cmd)
+    def cmd(args, cmd)
+      { type: :cmd, part: cmd[1].split("_")[1].to_sym, data: { name: args[0] } }
+    end
+
+    def doc(args, _cmd)
       { type: :doc, part: :main, data: {} }.tap do |result|
         m = args[0].match(/\((\w+)\)/)
         result[:data][:summary] = args[[m].compact.length..-1].join(" ")
@@ -33,7 +38,7 @@ module Restwoods
       end
     end
 
-    def res(args, cmd)
+    def res(args, _cmd)
       {
         type: :res,
         part: :main,
@@ -41,7 +46,7 @@ module Restwoods
       }
     end
 
-    def res_bind(args, cmd)
+    def res_bind(args, _cmd)
       { type: :res, part: :bind, data: {} }.tap do |result|
         m = args[0].match(/\((param|header|return|error)\)/)
         result[:data][:scope]   = m[1] unless m.nil?
@@ -69,7 +74,7 @@ module Restwoods
     end
 
     def res_io(args, cmd)
-      { type: :res, part: cmd[6].to_sym, data: {} }.tap do |result|
+      { type: :res, part: cmd[4].to_sym, data: {} }.tap do |result|
         r = analyze_arguments(args)
         unless r[:type].nil?
           options = r[:type][1].split("=")
@@ -97,5 +102,8 @@ module Restwoods
 
     alias_method :doc_state,  :state
     alias_method :res_state,  :state
+
+    alias_method :cmd_def, :cmd
+    alias_method :cmd_use, :cmd
   end
 end

@@ -471,5 +471,27 @@ describe Restwoods::LineParser do
         expect(hash[:data][:vars]).to eq ["num_a,num_b,num_c", "2"]
       end
     end
+
+    context "Parse command @cmd_def and @cmd_use" do
+      before(:each) do
+        @java_str = "*  @cmd_def order\n"
+        @coffee_str = "  @cmd_use items\n"
+      end
+
+      it "in java" do
+        hash = Restwoods::LineParser.new(@java_str, :java).parse
+        expect(hash[:type]).to eq :cmd
+        expect(hash[:part]).to eq :def
+        expect(hash[:data][:name]).to eq "order"
+      end
+
+      it "in coffee" do
+        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        expect(hash[:type]).to eq :cmd
+        expect(hash[:part]).to eq :use
+        expect(hash[:data][:name]).to eq "items"
+      end
+    end
+
   end
 end
