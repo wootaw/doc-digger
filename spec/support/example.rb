@@ -2,9 +2,12 @@ module Example
 =begin
   @doc (document1) Document One
     This row is a description of this document.
-    Detail: <=#
+    Detail:
+
     This is document of number one.
-    It do not anything. Just to test. <=#
+    It do not anything. Just to test.
+
+
       This is the second paragraph of this document description.
     It do not anything, too.
 =end
@@ -15,8 +18,10 @@ module Example
     resource :a_res do
 =begin
       @res get /api/v1/a_res Get list of A
-        This resource can get list of A. It can paginate. <=#
-        see more: <=#
+        This resource can get list of A. It can paginate.
+
+        see more:
+
             This is the second paragraph of this resource description.
         Can not have more describe.
 
@@ -105,7 +110,7 @@ module Example
           2. Second row
           3. Third row
         - Message two
-        This is the tail.
+        This is the error description tail.
         This is the last row.
 =end
       post do
@@ -128,7 +133,8 @@ module Example
       @res post /api/v2/b_res Get list of A
       @res_state coming This resource will be coming soon
         The first row description of resource state
-        The second row description of resource state. <=#
+        The second row description of resource state.
+
         The third row description of resource state
 =end
       post do
@@ -140,7 +146,8 @@ module Example
 =begin
   @doc Other Document
   @doc_state deprecated
-  The first row description of document state. <=#
+  The first row description of document state.
+
   The second row description of document state.
   The third row description of document state
 =end

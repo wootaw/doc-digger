@@ -59,6 +59,7 @@ module Restwoods
         branch(hash, true).merge!(hash[:data])
         @recent_command = hash.select { |k, v| k != :data }
         @recent_command[:space] = line_parser.indentation
+        @linebreak = false
       end
     end
 
@@ -91,19 +92,17 @@ module Restwoods
 
     def process_descriptions(item, hash)
       text = hash[:text].to_s.gsub(/\A\s{,#{@recent_command[:space] + 2}}/, '').rstrip
-      linebreak = /(.*)(<=#)\Z/.match(text)
-      text = linebreak[1].rstrip unless linebreak.nil?
-      return if text.length == 0
+      if text.length == 0
+        @linebreak = true
+        return
+      end
+      markdown = /\A\s*(#+|>|\-\s*|\d+\.|`{3})/ === text || @source
+      @source ^= /\A\s*`{3}/ === text if markdown
 
       item[:descriptions] = [[]] unless item.has_key?(:descriptions)
-      if /\A\s*(#+|>|\-\s*|\d+\.|`{3})/ === text || @source
-        item[:descriptions].pop if item[:descriptions].last.length == 0
-        item[:descriptions].push([text], [])
-        @source ^= /\A\s*`{3}/ === text
-      else
-        item[:descriptions].last << text
-        item[:descriptions] << [] unless linebreak.nil?
-      end
+      item[:descriptions] << [] if @linebreak || markdown
+      item[:descriptions].last << text
+      @linebreak = markdown
     end
 
     def check_lang
