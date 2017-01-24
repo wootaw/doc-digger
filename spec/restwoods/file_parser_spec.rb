@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Restwoods::FileParser do
-  before(:each) do
+  before(:context) do
     @rb_parser = Restwoods::FileParser.new("./spec/support/example.rb")
     @txt_parser = Restwoods::FileParser.new("./spec/support/example.txt")
   end
@@ -22,7 +22,7 @@ describe Restwoods::FileParser do
 
   describe ".parse" do
 
-    before(:each) do
+    before(:context) do
       @txt_hash = @txt_parser.results
       @ruby_hash = @rb_parser.results
     end
@@ -31,6 +31,7 @@ describe Restwoods::FileParser do
       it "Should be returns a array of without element" do
         expect(@txt_hash.length).to eq 0
         ap @ruby_hash
+        # p @ruby_hash
 
         # ap Base64.urlsafe_encode64(@ruby_hash.to_json)
       end
@@ -74,20 +75,20 @@ describe Restwoods::FileParser do
       end
 
       it "The second resource should have 3 success fields" do
-        expect(@ruby_hash[0][:resources][1][:returns].length).to eq 3
+        expect(@ruby_hash[0][:resources][1][:responses].length).to eq 5
       end
 
-      it "The second resource should have 2 error fields" do
-        expect(@ruby_hash[0][:resources][1][:errors].length).to eq 2
-      end
+      # it "The second resource should have 2 error fields" do
+      #   expect(@ruby_hash[0][:resources][1][:errors].length).to eq 2
+      # end
 
       it "The description of the second success field of the second resource should have 8 part" do
-        expect(@ruby_hash[0][:resources][1][:returns][1][:descriptions].length).to eq 8
+        expect(@ruby_hash[0][:resources][1][:responses][1][:descriptions].length).to eq 8
       end
 
-      it "The description of the second error field of the second resource should have 7 part" do
-        expect(@ruby_hash[0][:resources][1][:errors][1][:descriptions].length).to eq 7
-      end
+      # it "The description of the second error field of the second resource should have 7 part" do
+      #   expect(@ruby_hash[0][:resources][1][:errors][1][:descriptions].length).to eq 7
+      # end
 
       it "The state of the last document should be deprecated" do
         expect(@ruby_hash.last[:state][:name]).to eq "deprecated"

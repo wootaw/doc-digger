@@ -184,7 +184,7 @@ describe Restwoods::LineParser do
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :main
         expect(hash[:data][:method]).to eq "get"
-        expect(hash[:data][:route]).to eq "/api/v1/a_res"
+        expect(hash[:data][:path]).to eq "/api/v1/a_res"
         expect(hash[:data][:summary]).to eq "Get list of A"
       end
 

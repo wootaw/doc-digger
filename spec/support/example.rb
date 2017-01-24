@@ -81,8 +81,8 @@ module Example
 
       @res_param {Boolean} ok A boolean value
 
-      @res_return (group1) [a] A
-      @res_return (group1) {String=a,b,c} b B
+      @res_response (group1) [a] A
+      @res_response (group1) {String=a,b,c} b B
         This is the first row.
         This is the second row.
         ```ruby
@@ -93,16 +93,16 @@ module Example
         ```
         This is the tail.
         This is the last row.
-      @res_return {Number[]=1,2,3} c C
+      @res_response {Number[]=1,2,3} c C
         More description about response C.
         Can't write more about response C.
 
-      @res_error code Error code
+      @res_response (Error) code Error code
         - 100 Message number one
         - 101 Message number two
         - 102 Message number three
         This is the last row.
-      @res_error msg Error message
+      @res_response (Error) msg Error message
         This is a row detail,
         See more:
         - Message one

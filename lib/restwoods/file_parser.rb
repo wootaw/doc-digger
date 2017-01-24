@@ -80,7 +80,7 @@ module Restwoods
       when :state
         item[:state] = {} if initial && !item.has_key?(:state)
         item = item[:state]
-      when /\A(param|header|return|error|bind)\Z/
+      when /\A(param|header|response|bind)\Z/
         part = "#{command[:part]}s".to_sym
         if initial
           item[part] = [] unless item.has_key?(part)

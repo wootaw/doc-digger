@@ -2,7 +2,7 @@ module Restwoods
   class LineParser
 
     PICKS = { java: /\A\s*\*/, erlang: /\A\s*%/, perl: /\A\s*#/ }
-    COMMANDS = /\A@(doc(\_state)?|res(\_(param|header|return|error|state|bind))?|cmd\_(def|use))\Z/
+    COMMANDS = /\A@(doc(\_state)?|res(\_(param|header|response|state|bind))?|cmd\_(def|use))\Z/
 
     def initialize(str, clazz)
       @clazz = clazz
@@ -42,7 +42,7 @@ module Restwoods
       {
         type: :res,
         part: :main,
-        data: { method: args[0], route: args[1], summary: args[2..-1].join(" ") }
+        data: { method: args[0], path: args[1], summary: args[2..-1].join(" ") }
       }
     end
 
@@ -95,10 +95,9 @@ module Restwoods
       end
     end
 
-    alias_method :res_param,  :res_io
-    alias_method :res_header, :res_io
-    alias_method :res_return, :res_io
-    alias_method :res_error,  :res_io
+    alias_method :res_param,    :res_io
+    alias_method :res_header,   :res_io
+    alias_method :res_response, :res_io
 
     alias_method :doc_state,  :state
     alias_method :res_state,  :state

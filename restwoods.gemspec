@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["wootaw@gmail.com"]
 
   spec.summary       = "This gem generate RESTful web API documentation."
-  spec.description   = "This gem generate RESTful web API documentation."
+  spec.description   = "RESTWoods is a tool for generating RESTful web API documentation by analyzing block comments."
   spec.homepage      = "https://github.com/wootaw/restwoods"
   spec.license       = "MIT"
 
@@ -32,8 +32,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rspec-nc"
-  spec.add_development_dependency "awesome_print"
+  spec.add_development_dependency "rspec-nc", '~> 0'
+  spec.add_development_dependency "awesome_print", '~> 1.7'
   spec.add_development_dependency "guard", '~> 2'
   spec.add_development_dependency "guard-rspec", '~> 4'
   spec.add_development_dependency "pry", '~> 0'
