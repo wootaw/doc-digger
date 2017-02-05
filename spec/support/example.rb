@@ -17,7 +17,7 @@ module Example
 
     resource :a_res do
 =begin
-      @res get /api/v1/a_res Get list of A
+      @res get /api/v1/a_res/:num_a Get list of A
         This resource can get list of A. It can paginate.
 
         see more:
@@ -32,7 +32,7 @@ module Example
       @res_param {Number} [num=0] A Number value
       @res_param {String=a,b,c} str Allowed values
 
-      @res_param {Number} [num_a] A Number value
+      @res_param (path) {Number} [num_a] A Number value
       @res_param {Number} [num_b] A Number value, too.
       @res_param {Number} [num_c] A Number value, again.
       @res_bind (param) least num_a,num_b,num_c 1
@@ -52,13 +52,13 @@ module Example
       @res_param [z] Z
       @res_bind entire str_x,str_y,z
 
-      @res_param (group1) {Object} obj An Object value
-      @res_param (group1) {String} obj.name name of Object
-      @res_param (group1) {Number} [obj.count=0] count of Object
+      @res_param (body) {Object} obj An Object value
+      @res_param (body) {String} obj.name name of Object
+      @res_param (body) {Number} [obj.count=0] count of Object
 
-      @res_param (group2) {Object[]} data An Array value
-      @res_param (group2) {Boolean} data.ok ok?
-      @res_param (group2) {Number[]=2,3,4} [data.sum] Sum
+      @res_param (body) {Object[]} data An Array value
+      @res_param (body) {Boolean} data.ok ok?
+      @res_param (body) {Number[]=2,3,4} [data.sum] Sum
 =end
       get do
 

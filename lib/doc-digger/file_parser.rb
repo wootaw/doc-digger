@@ -1,4 +1,4 @@
-module Restwoods
+module DocDigger
   class FileParser
 
     LANGUAGES = {
@@ -6,7 +6,7 @@ module Restwoods
       ruby:   [['=begin', '=end'], /\A\.(rb)\Z/],
       perl:   [['#**', '#*'], /\A\.(perl|pl|pm)\Z/],
       python: [['"""', '"""'], /\A\.(py)\Z/],
-      elixir: [['@restwoods """', '"""'], /\A\.(ex|exs?)\Z/],
+      elixir: [['@dd """', '"""'], /\A\.(ex|exs?)\Z/],
       erlang: [['%{', '%}'], /\A\.(erl)\Z/],
       coffee: [['###', '###'], /\A\.(coffee)\Z/],
       lua:    [['--[[', ']]'], /\A\.(lua)\Z/]
@@ -51,7 +51,7 @@ module Restwoods
     protected
 
     def process_line(str)
-      line_parser = Restwoods::LineParser.new(str, lang)
+      line_parser = LineParser.new(str, lang)
       hash = line_parser.parse
       if hash[:type] == :joint
         return if @recent_command.nil?

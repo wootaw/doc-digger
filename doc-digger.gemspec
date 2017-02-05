@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'restwoods/version'
+require 'doc-digger/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "restwoods"
-  spec.version       = Restwoods::VERSION
+  spec.name          = "doc-digger"
+  spec.version       = DocDigger::VERSION
   spec.authors       = ["wootaw"]
   spec.email         = ["wootaw@gmail.com"]
 
   spec.summary       = "This gem generate RESTful web API documentation."
   spec.description   = "RESTWoods is a tool for generating RESTful web API documentation by analyzing block comments."
-  spec.homepage      = "https://github.com/wootaw/restwoods"
+  spec.homepage      = "https://github.com/wootaw/doc-digger"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

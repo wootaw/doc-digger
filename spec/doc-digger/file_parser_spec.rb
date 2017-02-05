@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Restwoods::FileParser do
+describe DocDigger::FileParser do
   before(:context) do
-    @rb_parser = Restwoods::FileParser.new("./spec/support/example.rb")
-    @txt_parser = Restwoods::FileParser.new("./spec/support/example.txt")
+    @rb_parser = DocDigger::FileParser.new("./spec/support/example.rb")
+    @txt_parser = DocDigger::FileParser.new("./spec/support/example.txt")
   end
 
   describe ".lang" do
@@ -62,8 +62,8 @@ describe Restwoods::FileParser do
         expect(@ruby_hash[0][:resources][0][:binds].length).to eq 4
       end
 
-      it "The first parameter of the first resource should have 6 attributes" do
-        expect(@ruby_hash[0][:resources][0][:params][0].size).to eq 6
+      it "The first parameter of the first resource should have 7 attributes" do
+        expect(@ruby_hash[0][:resources][0][:params][0].size).to eq 7
       end
 
       it "The last parameter of the first resource should have 8 attributes" do

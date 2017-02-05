@@ -1,11 +1,11 @@
-# Restwoods
+# DocDigger
 
-[![Build Status](https://travis-ci.org/wootaw/restwoods.svg?branch=master)](https://travis-ci.org/wootaw/restwoods)
-[![Gem Version](https://badge.fury.io/rb/restwoods.png)](http://badge.fury.io/rb/restwoods)
-[![Code Climate](https://codeclimate.com/github/wootaw/restwoods/badges/gpa.svg)](https://codeclimate.com/github/wootaw/restwoods)
-[![Test Coverage](https://codeclimate.com/github/wootaw/restwoods/badges/coverage.svg)](https://codeclimate.com/github/wootaw/restwoods/coverage)
+[![Build Status](https://travis-ci.org/wootaw/doc-digger.svg?branch=master)](https://travis-ci.org/wootaw/doc-digger)
+[![Gem Version](https://badge.fury.io/rb/doc-digger.png)](http://badge.fury.io/rb/doc-digger)
+[![Code Climate](https://codeclimate.com/github/wootaw/doc-digger/badges/gpa.svg)](https://codeclimate.com/github/wootaw/doc-digger)
+[![Test Coverage](https://codeclimate.com/github/wootaw/doc-digger/badges/coverage.svg)](https://codeclimate.com/github/wootaw/doc-digger/coverage)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/restwoods`. To experiment with that code, run `bin/console` for an interactive prompt.
+Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/doc-digger`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 TODO: Delete this and the text above, and describe your gem
 
@@ -14,7 +14,7 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'restwoods'
+gem 'doc-digger'
 ```
 
 And then execute:
@@ -23,11 +23,11 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install restwoods
+    $ gem install doc-digger
 
 ## Basic Usage
 
-RESTWoods is a tool for generating RESTful web API documentation by analyzing block comments. Below is a simple example showing some of the more common features of RESTWoods in documenting parts of the Twitter API that created by Grape.
+DocDigger is a tool for generating RESTful web API documentation by analyzing block comments. Below is a simple example showing some of the more common features of DocDigger in documenting parts of the Twitter API that created by Grape.
 
 ```ruby
 module Twitter
@@ -35,9 +35,11 @@ module Twitter
 =begin
   @doc (twitter) Twitter
     This row is a description of this document.
-    Detail: <=#
+    Detail: 
+
     This is document of number one.
-    It do not anything. Just to at here. <=#
+    It do not anything. Just to at here. 
+
     This is the second paragraph of this document description.
     It do not anything, too.
 =end
@@ -144,7 +146,7 @@ end
 
 - elixir
 ```elixir
-@restwoods """
+@dd """
   @doc (twitter) Twitter
 """
 ```
@@ -172,13 +174,21 @@ end
 
 ## Commands
 
+
+
 ### @doc
+
+| Field | Description |  
+| --- | --- |
+| name | |  
+| summary | |  
+| descriptions | |
 
 ### @res
 
 ### @doc_state and @res_state
 
-### @res_param @res_header @res_return @res_error
+### @res_param @res_header @res_response
 
 ## Descriptions
 
@@ -190,7 +200,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/wootaw/restwoods. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/wootaw/doc-digger. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License

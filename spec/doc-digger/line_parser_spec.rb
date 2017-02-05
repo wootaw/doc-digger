@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Restwoods::LineParser do
+describe DocDigger::LineParser do
 
   describe ".indentation" do
     context "When have two whitespace in string start" do
@@ -15,37 +15,37 @@ describe Restwoods::LineParser do
       end
 
       it "Should be returns 2 in c" do
-        parser = Restwoods::LineParser.new(@c_str, :java)
+        parser = DocDigger::LineParser.new(@c_str, :java)
         expect(parser.indentation).to eq 2
       end
 
       it "Should be returns 2 in coffee" do
-        parser = Restwoods::LineParser.new(@coffee_str, :coffee)
+        parser = DocDigger::LineParser.new(@coffee_str, :coffee)
         expect(parser.indentation).to eq 2
       end
 
       it "Should be returns 2 in elixir" do
-        parser = Restwoods::LineParser.new(@elixir_str, :elixir)
+        parser = DocDigger::LineParser.new(@elixir_str, :elixir)
         expect(parser.indentation).to eq 2
       end
 
       it "Should be returns 2 in erlang" do
-        parser = Restwoods::LineParser.new(@erlang_str, :erlang)
+        parser = DocDigger::LineParser.new(@erlang_str, :erlang)
         expect(parser.indentation).to eq 2
       end
 
       it "Should be returns 2 in perl" do
-        parser = Restwoods::LineParser.new(@perl_str, :perl)
+        parser = DocDigger::LineParser.new(@perl_str, :perl)
         expect(parser.indentation).to eq 2
       end
 
       it "Should be returns 2 in python" do
-        parser = Restwoods::LineParser.new(@python_str, :python)
+        parser = DocDigger::LineParser.new(@python_str, :python)
         expect(parser.indentation).to eq 2
       end
 
       it "Should be returns 2 in ruby" do
-        parser = Restwoods::LineParser.new(@ruby_str, :ruby)
+        parser = DocDigger::LineParser.new(@ruby_str, :ruby)
         expect(parser.indentation).to eq 2
       end
     end
@@ -62,37 +62,37 @@ describe Restwoods::LineParser do
       end
 
       it "Should be returns zero in java" do
-        parser = Restwoods::LineParser.new(@c_str, :java)
+        parser = DocDigger::LineParser.new(@c_str, :java)
         expect(parser.indentation).to eq 0
       end
 
       it "Should be returns zero in coffee" do
-        parser = Restwoods::LineParser.new(@coffee_str, :coffee)
+        parser = DocDigger::LineParser.new(@coffee_str, :coffee)
         expect(parser.indentation).to eq 0
       end
 
       it "Should be returns zero in elixir" do
-        parser = Restwoods::LineParser.new(@elixir_str, :elixir)
+        parser = DocDigger::LineParser.new(@elixir_str, :elixir)
         expect(parser.indentation).to eq 0
       end
 
       it "Should be returns zero in erlang" do
-        parser = Restwoods::LineParser.new(@erlang_str, :erlang)
+        parser = DocDigger::LineParser.new(@erlang_str, :erlang)
         expect(parser.indentation).to eq 0
       end
 
       it "Should be returns zero in perl" do
-        parser = Restwoods::LineParser.new(@perl_str, :perl)
+        parser = DocDigger::LineParser.new(@perl_str, :perl)
         expect(parser.indentation).to eq 0
       end
 
       it "Should be returns zero in python" do
-        parser = Restwoods::LineParser.new(@python_str, :python)
+        parser = DocDigger::LineParser.new(@python_str, :python)
         expect(parser.indentation).to eq 0
       end
 
       it "Should be returns zero in ruby" do
-        parser = Restwoods::LineParser.new(@ruby_str, :ruby)
+        parser = DocDigger::LineParser.new(@ruby_str, :ruby)
         expect(parser.indentation).to eq 0
       end
     end
@@ -112,7 +112,7 @@ describe Restwoods::LineParser do
       end
 
       it "in c" do
-        hash = Restwoods::LineParser.new(@c_str, :java).parse
+        hash = DocDigger::LineParser.new(@c_str, :java).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :main
         expect(hash[:data][:name]).to eq "document1"
@@ -120,7 +120,7 @@ describe Restwoods::LineParser do
       end
 
       it "in coffee" do
-        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        hash = DocDigger::LineParser.new(@coffee_str, :coffee).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :main
         expect(hash[:data][:name].nil?).to be_truthy
@@ -128,7 +128,7 @@ describe Restwoods::LineParser do
       end
 
       it "in elixir" do
-        hash = Restwoods::LineParser.new(@elixir_str, :elixir).parse
+        hash = DocDigger::LineParser.new(@elixir_str, :elixir).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :main
         expect(hash[:data][:name]).to eq "document1"
@@ -136,7 +136,7 @@ describe Restwoods::LineParser do
       end
 
       it "in erlang" do
-        hash = Restwoods::LineParser.new(@erlang_str, :erlang).parse
+        hash = DocDigger::LineParser.new(@erlang_str, :erlang).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :main
         expect(hash[:data][:name]).to eq "document1"
@@ -144,7 +144,7 @@ describe Restwoods::LineParser do
       end
 
       it "in perl" do
-        hash = Restwoods::LineParser.new(@perl_str, :perl).parse
+        hash = DocDigger::LineParser.new(@perl_str, :perl).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :main
         expect(hash[:data][:name].nil?).to be_truthy
@@ -152,7 +152,7 @@ describe Restwoods::LineParser do
       end
 
       it "in python" do
-        hash = Restwoods::LineParser.new(@python_str, :python).parse
+        hash = DocDigger::LineParser.new(@python_str, :python).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :main
         expect(hash[:data][:name]).to eq "document1"
@@ -160,7 +160,7 @@ describe Restwoods::LineParser do
       end
 
       it "in ruby" do
-        hash = Restwoods::LineParser.new(@ruby_str, :ruby).parse
+        hash = DocDigger::LineParser.new(@ruby_str, :ruby).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :main
         expect(hash[:data][:name]).to eq "document1"
@@ -180,7 +180,7 @@ describe Restwoods::LineParser do
       end
 
       it "in c" do
-        hash = Restwoods::LineParser.new(@c_str, :java).parse
+        hash = DocDigger::LineParser.new(@c_str, :java).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :main
         expect(hash[:data][:method]).to eq "get"
@@ -192,20 +192,20 @@ describe Restwoods::LineParser do
 
     context "Parse resource command @res_param" do
       before(:each) do
-        @java_str = "*  @res_param {Boolean} is A boolean value\n"
-        @coffee_str = "  @res_param {String=a,b,c} [str=b] Allowed values\n"
-        @perl_str = "#  @res_param (group1) {Object} obj An Object value\n"
-        @python_str = "  @res_param (group1) {String} obj.name name of Object\n"
+        @java_str = "*  @res_param (group1) {Boolean} is A boolean value\n"
+        @coffee_str = "  @res_param (path) {String=a,b,c} [str=b] Allowed values\n"
+        @perl_str = "#  @res_param (body) {Object} obj An Object value\n"
+        @python_str = "  @res_param (body) {String} obj.name name of Object\n"
         @erlang_str = "%  @res_param {Object[]} [obj.data] data of Object\n"
         @elixir_str = "  @res_param  [obj.data.val=0] A value\n"
         @ruby_str = "  @res_param {Number[]=2,3,4} num_z=3 Number Z\n"
       end
 
       it "in java" do
-        hash = Restwoods::LineParser.new(@java_str, :java).parse
+        hash = DocDigger::LineParser.new(@java_str, :java).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :param
-        expect(hash[:data][:group].nil?).to be_truthy
+        expect(hash[:data][:location]).to eq "query"
         expect(hash[:data][:type]).to eq "Boolean"
         expect(hash[:data][:name]).to eq "is"
         expect(hash[:data][:summary]).to eq "A boolean value"
@@ -217,14 +217,14 @@ describe Restwoods::LineParser do
       end
 
       it "in coffee" do
-        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        hash = DocDigger::LineParser.new(@coffee_str, :coffee).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :param
-        expect(hash[:data][:group].nil?).to be_truthy
+        expect(hash[:data][:location]).to eq "path"
         expect(hash[:data][:type]).to eq "String"
         expect(hash[:data][:name]).to eq "str"
         expect(hash[:data][:summary]).to eq "Allowed values"
-        expect(hash[:data][:required]).not_to be_truthy
+        expect(hash[:data][:required]).to be_truthy
         expect(hash[:data][:array]).not_to be_truthy
         expect(hash[:data][:parent].nil?).to be_truthy
         expect(hash[:data][:default]).to eq "b"
@@ -232,10 +232,10 @@ describe Restwoods::LineParser do
       end
 
       it "in elixir" do
-        hash = Restwoods::LineParser.new(@elixir_str, :elixir).parse
+        hash = DocDigger::LineParser.new(@elixir_str, :elixir).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :param
-        expect(hash[:data][:group].nil?).to be_truthy
+        expect(hash[:data][:location]).to eq "query"
         expect(hash[:data][:type].nil?).to be_truthy
         expect(hash[:data][:name]).to eq "val"
         expect(hash[:data][:summary]).to eq "A value"
@@ -247,10 +247,10 @@ describe Restwoods::LineParser do
       end
 
       it "in erlang" do
-        hash = Restwoods::LineParser.new(@erlang_str, :erlang).parse
+        hash = DocDigger::LineParser.new(@erlang_str, :erlang).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :param
-        expect(hash[:data][:group].nil?).to be_truthy
+        expect(hash[:data][:location]).to eq "query"
         expect(hash[:data][:type]).to eq "Object"
         expect(hash[:data][:name]).to eq "data"
         expect(hash[:data][:summary]).to eq "data of Object"
@@ -262,10 +262,10 @@ describe Restwoods::LineParser do
       end
 
       it "in perl" do
-        hash = Restwoods::LineParser.new(@perl_str, :perl).parse
+        hash = DocDigger::LineParser.new(@perl_str, :perl).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :param
-        expect(hash[:data][:group]).to eq "group1"
+        expect(hash[:data][:location]).to eq "body"
         expect(hash[:data][:type]).to eq "Object"
         expect(hash[:data][:name]).to eq "obj"
         expect(hash[:data][:summary]).to eq "An Object value"
@@ -277,10 +277,10 @@ describe Restwoods::LineParser do
       end
 
       it "in python" do
-        hash = Restwoods::LineParser.new(@python_str, :python).parse
+        hash = DocDigger::LineParser.new(@python_str, :python).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :param
-        expect(hash[:data][:group]).to eq "group1"
+        expect(hash[:data][:location]).to eq "body"
         expect(hash[:data][:type]).to eq "String"
         expect(hash[:data][:name]).to eq "name"
         expect(hash[:data][:summary]).to eq "name of Object"
@@ -292,10 +292,10 @@ describe Restwoods::LineParser do
       end
 
       it "in ruby" do
-        hash = Restwoods::LineParser.new(@ruby_str, :ruby).parse
+        hash = DocDigger::LineParser.new(@ruby_str, :ruby).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :param
-        expect(hash[:data][:group].nil?).to be_truthy
+        expect(hash[:data][:location]).to eq "query"
         expect(hash[:data][:type]).to eq "Number"
         expect(hash[:data][:name]).to eq "num_z"
         expect(hash[:data][:summary]).to eq "Number Z"
@@ -319,7 +319,7 @@ describe Restwoods::LineParser do
       end
 
       it "in java" do
-        hash = Restwoods::LineParser.new(@java_str, :java).parse
+        hash = DocDigger::LineParser.new(@java_str, :java).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :header
         expect(hash[:data][:group].nil?).to be_truthy
@@ -334,7 +334,7 @@ describe Restwoods::LineParser do
       end
 
       it "in coffee" do
-        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        hash = DocDigger::LineParser.new(@coffee_str, :coffee).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :header
         expect(hash[:data][:group].nil?).to be_truthy
@@ -349,7 +349,7 @@ describe Restwoods::LineParser do
       end
 
       it "in elixir" do
-        hash = Restwoods::LineParser.new(@elixir_str, :elixir).parse
+        hash = DocDigger::LineParser.new(@elixir_str, :elixir).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :header
         expect(hash[:data][:group].nil?).to be_truthy
@@ -364,7 +364,7 @@ describe Restwoods::LineParser do
       end
 
       it "in erlang" do
-        hash = Restwoods::LineParser.new(@erlang_str, :erlang).parse
+        hash = DocDigger::LineParser.new(@erlang_str, :erlang).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :header
         expect(hash[:data][:group].nil?).to be_truthy
@@ -379,7 +379,7 @@ describe Restwoods::LineParser do
       end
 
       it "in perl" do
-        hash = Restwoods::LineParser.new(@perl_str, :perl).parse
+        hash = DocDigger::LineParser.new(@perl_str, :perl).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :header
         expect(hash[:data][:group]).to eq "group1"
@@ -394,7 +394,7 @@ describe Restwoods::LineParser do
       end
 
       it "in python" do
-        hash = Restwoods::LineParser.new(@python_str, :python).parse
+        hash = DocDigger::LineParser.new(@python_str, :python).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :header
         expect(hash[:data][:group]).to eq "group1"
@@ -409,7 +409,7 @@ describe Restwoods::LineParser do
       end
 
       it "in ruby" do
-        hash = Restwoods::LineParser.new(@ruby_str, :ruby).parse
+        hash = DocDigger::LineParser.new(@ruby_str, :ruby).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :header
         expect(hash[:data][:group].nil?).to be_truthy
@@ -431,7 +431,7 @@ describe Restwoods::LineParser do
       end
 
       it "in java" do
-        hash = Restwoods::LineParser.new(@java_str, :java).parse
+        hash = DocDigger::LineParser.new(@java_str, :java).parse
         expect(hash[:type]).to eq :doc
         expect(hash[:part]).to eq :state
         expect(hash[:data][:name]).to eq "coming"
@@ -439,7 +439,7 @@ describe Restwoods::LineParser do
       end
 
       it "in coffee" do
-        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        hash = DocDigger::LineParser.new(@coffee_str, :coffee).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :state
         expect(hash[:data][:name]).to eq "deprecated"
@@ -454,7 +454,7 @@ describe Restwoods::LineParser do
       end
 
       it "in java" do
-        hash = Restwoods::LineParser.new(@java_str, :java).parse
+        hash = DocDigger::LineParser.new(@java_str, :java).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :bind
         expect(hash[:data][:scope]).to eq "param"
@@ -463,7 +463,7 @@ describe Restwoods::LineParser do
       end
 
       it "in coffee" do
-        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        hash = DocDigger::LineParser.new(@coffee_str, :coffee).parse
         expect(hash[:type]).to eq :res
         expect(hash[:part]).to eq :bind
         expect(hash[:data][:scope].nil?).to be_truthy
@@ -479,14 +479,14 @@ describe Restwoods::LineParser do
       end
 
       it "in java" do
-        hash = Restwoods::LineParser.new(@java_str, :java).parse
+        hash = DocDigger::LineParser.new(@java_str, :java).parse
         expect(hash[:type]).to eq :cmd
         expect(hash[:part]).to eq :def
         expect(hash[:data][:name]).to eq "order"
       end
 
       it "in coffee" do
-        hash = Restwoods::LineParser.new(@coffee_str, :coffee).parse
+        hash = DocDigger::LineParser.new(@coffee_str, :coffee).parse
         expect(hash[:type]).to eq :cmd
         expect(hash[:part]).to eq :use
         expect(hash[:data][:name]).to eq "items"
