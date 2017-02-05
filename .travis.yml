@@ -13,4 +13,4 @@ notifications:
     on_success: never
 addons:
   code_climate:
-    repo_token: fb779cb868a2fd4ecb41df8db0e57472f977682ca9ac7e85ac63e9bdd79a0032
+    repo_token: 7fedad134e1b7d283411989b2063972bb9fada64a076b9a2a6bf6c523baa4057

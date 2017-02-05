@@ -52,9 +52,9 @@ module Twitter
 =begin
       @res get /api/v1/statuses/public_timeline Return a public timeline
 
-      @res_return {Object[]} data Status List
-      @res_return {String} data.id Status ID
-      @res_return {String} data.status Your status
+      @res_response {Object[]} data Status List
+      @res_response {String} data.id Status ID
+      @res_response {String} data.status Your status
 =end
       get :public_timeline do
       end
@@ -63,19 +63,19 @@ module Twitter
       @res get /api/v1/statuses/home_timeline Return a personal timeline
       @res_error (401) msg 401 Unauthorized
 
-      @res_return {Object[]} data Status List
-      @res_return {String} data.id Status ID
-      @res_return {String} data.status Your status
+      @res_response {Object[]} data Status List
+      @res_response {String} data.id Status ID
+      @res_response {String} data.status Your status
 =end
       get :home_timeline do
       end
 
 =begin
       @res get /api/v1/statuses/:id Return a status
-      @res_param {Number} id Status id
+      @res_param (path) {Number} id Status id
 
-      @res_return {String} id Status ID
-      @res_return {String} status Your status
+      @res_response {String} id Status ID
+      @res_response {String} status Your status
 
       @res_state deprecated
 =end
@@ -86,25 +86,25 @@ module Twitter
 
 =begin
       @res post /api/v1/statuses Create a status
-      @res_param {String} status Your status
-      @res_error (401) msg 401 Unauthorized
+      @res_param (form) {String} status Your status
+      @res_response (body=401) msg 401 Unauthorized
 =end
       post do
       end
 
 =begin
       @res put /api/v1/statuses/:id Update a status
-      @res_param {String} id Status ID
-      @res_param {String} status Your status
-      @res_error (401) msg 401 Unauthorized
+      @res_param (path) {String} id Status ID
+      @res_param (form) {String} status Your status
+      @res_response (body=401) msg 401 Unauthorized
 =end
       put ':id' do
       end
 
 =begin
       @res delete /api/v1/statuses/:id Delete a status
-      @res_param {String} id Status ID
-      @res_error (401) msg 401 Unauthorized
+      @res_param (path) {String} id Status ID
+      @res_response (body=401) msg 401 Unauthorized
       @res_state coming This resource will be coming soon
 =end
       delete ':id' do

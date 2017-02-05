@@ -2,8 +2,9 @@ module DocDigger
   class LineParser
 
     PICKS = { java: /\A\s*\*/, erlang: /\A\s*%/, perl: /\A\s*#/ }
-    COMMANDS = /\A@(doc(\_state)?|res(\_(param|header|response|state|bind))?|cmd\_(def|use))\Z/
-    LOCATIONS = /\Apath|query|header|form|body\Z/
+    COMMANDS = /\A@(doc(\_state)?|res(\_(param|response|state|bind))?|cmd\_(def|use))\Z/
+    PARAMETER_LOCATIONS = /\Apath|query|header|form|body\Z/
+    RESPONSE_LOCATIONS = /\Aheader|body\Z/
 
     def initialize(str, clazz)
       @clazz = clazz
@@ -65,7 +66,7 @@ module DocDigger
     end
 
     def analyze_arguments(args)
-      { group: args[0].to_s.match(/\((\w+)\)/) }.tap do |r|
+      { group: args[0].to_s.match(/\((.+)\)/) }.tap do |r|
         r[:type]    = (r[:group].nil? ? args[0] : args[1]).to_s.match(/\{(.+)\}/)
         r[:names]   = args[[r[:group], r[:type]].compact.length].to_s
         r[:name]    = r[:names].match(/\A\[(.+)\]\Z/)
@@ -89,7 +90,7 @@ module DocDigger
         end
 
         location = (r[:group] || [])[1]
-        result[:data][:location]  = LOCATIONS === location ? location : 'query'
+        result[:data][:location]  = PARAMETER_LOCATIONS === location ? location : 'query'
         result[:data][:required]  = location == "path" || r[:name].nil?
         result[:data][:default]   = r[:default][1] if r[:default].length == 2
         result[:data][:parent]    = r[:parent][0..-2] if r[:parent].length > 1
@@ -98,7 +99,7 @@ module DocDigger
       end
     end
 
-    def res_io(args, cmd)
+    def res_response(args, cmd)
       { type: :res, part: cmd[4].to_sym, data: {} }.tap do |result|
         r = analyze_arguments(args)
         unless r[:type].nil?
@@ -111,18 +112,15 @@ module DocDigger
             result[:data][:type]  = array[1]
           end
         end
-        result[:data][:group]     = r[:group][1] unless r[:group].nil?
-        result[:data][:required]  = r[:name].nil?
-        result[:data][:default]   = r[:default][1] if r[:default].length == 2
+
+        location = (r[:group] || [nil, 'body'])[1].split('=')
+        result[:data][:group]     = location[1] if location.length > 1
+        result[:data][:location]  = RESPONSE_LOCATIONS === location[0] ? location[0] : 'body'
         result[:data][:parent]    = r[:parent][0..-2] if r[:parent].length > 1
-        result[:data][:name]      = r[:parent].length == 1 ? r[:default][0] : r[:parent][-1]
+        result[:data][:name]      = r[:parent].length == 1 ? r[:names] : r[:parent][-1]
         result[:data][:summary]   = args[([r[:group], r[:type]].compact.length + 1)..-1].join(' ')
       end
     end
-
-    # alias_method :res_param,    :res_io
-    alias_method :res_header,   :res_io
-    alias_method :res_response, :res_io
 
     alias_method :doc_state,  :state
     alias_method :res_state,  :state

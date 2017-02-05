@@ -70,10 +70,6 @@ describe DocDigger::FileParser do
         expect(@ruby_hash[0][:resources][0][:params].last.size).to eq 8
       end
 
-      it "The second resource should have 6 headers" do
-        expect(@ruby_hash[0][:resources][1][:headers].length).to eq 6
-      end
-
       it "The second resource should have 3 success fields" do
         expect(@ruby_hash[0][:resources][1][:responses].length).to eq 5
       end
