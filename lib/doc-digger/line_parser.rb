@@ -75,7 +75,7 @@ module DocDigger
       end
     end
 
-    def res_param(args, cmd)
+    def res_io(args, cmd)
       { type: :res, part: cmd[4].to_sym, data: {} }.tap do |result|
         r = analyze_arguments(args)
         unless r[:type].nil?
@@ -89,38 +89,27 @@ module DocDigger
           end
         end
 
-        location = (r[:group] || [])[1]
-        result[:data][:location]  = PARAMETER_LOCATIONS === location ? location : 'query'
-        result[:data][:required]  = location == "path" || r[:name].nil?
-        result[:data][:default]   = r[:default][1] if r[:default].length == 2
-        result[:data][:parent]    = r[:parent][0..-2] if r[:parent].length > 1
-        result[:data][:name]      = r[:parent].length == 1 ? r[:default][0] : r[:parent][-1]
-        result[:data][:summary]   = args[([r[:group], r[:type]].compact.length + 1)..-1].join(' ')
-      end
-    end
-
-    def res_response(args, cmd)
-      { type: :res, part: cmd[4].to_sym, data: {} }.tap do |result|
-        r = analyze_arguments(args)
-        unless r[:type].nil?
-          options = r[:type][1].split("=")
-          array = options[0].match(/(\w+)(\[\])?\Z/)
-
-          result[:data][:options] = options[1].split(",") if options.length == 2
-          unless array.nil?
-            result[:data][:array] = !array[2].nil?
-            result[:data][:type]  = array[1]
-          end
+        case result[:part]
+        when :param
+          location = (r[:group] || [])[1]
+          result[:data][:location]  = PARAMETER_LOCATIONS === location ? location : 'query'
+          result[:data][:required]  = location == "path" || r[:name].nil?
+          result[:data][:default]   = r[:default][1] if r[:default].length == 2
+          result[:data][:name]      = r[:parent].length == 1 ? r[:default][0] : r[:parent][-1]
+        when :response
+          location = (r[:group] || [nil, 'body'])[1].split('=')
+          result[:data][:group]     = location[1] if location.length > 1
+          result[:data][:location]  = RESPONSE_LOCATIONS === location[0] ? location[0] : 'body'
+          result[:data][:name]      = r[:parent].length == 1 ? r[:names] : r[:parent][-1]
         end
 
-        location = (r[:group] || [nil, 'body'])[1].split('=')
-        result[:data][:group]     = location[1] if location.length > 1
-        result[:data][:location]  = RESPONSE_LOCATIONS === location[0] ? location[0] : 'body'
         result[:data][:parent]    = r[:parent][0..-2] if r[:parent].length > 1
-        result[:data][:name]      = r[:parent].length == 1 ? r[:names] : r[:parent][-1]
         result[:data][:summary]   = args[([r[:group], r[:type]].compact.length + 1)..-1].join(' ')
       end
     end
+
+    alias_method :res_param,    :res_io
+    alias_method :res_response, :res_io
 
     alias_method :doc_state,  :state
     alias_method :res_state,  :state

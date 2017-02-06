@@ -188,7 +188,7 @@ end
 
 ### @doc_state and @res_state
 
-### @res_param @res_header @res_response
+### @res_param @res_response
 
 ## Descriptions
 
