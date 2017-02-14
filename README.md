@@ -1,13 +1,11 @@
 # DocDigger
 
 [![Build Status](https://travis-ci.org/wootaw/doc-digger.svg?branch=master)](https://travis-ci.org/wootaw/doc-digger)
-[![Gem Version](https://badge.fury.io/rb/doc-digger.png)](http://badge.fury.io/rb/doc-digger)
+[![Gem Version](https://badge.fury.io/rb/doc-digger.svg)](https://badge.fury.io/rb/doc-digger)
 [![Code Climate](https://codeclimate.com/github/wootaw/doc-digger/badges/gpa.svg)](https://codeclimate.com/github/wootaw/doc-digger)
 [![Test Coverage](https://codeclimate.com/github/wootaw/doc-digger/badges/coverage.svg)](https://codeclimate.com/github/wootaw/doc-digger/coverage)
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/doc-digger`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
@@ -27,7 +25,7 @@ Or install it yourself as:
 
 ## Basic Usage
 
-DocDigger is a tool for generating RESTful web API documentation by analyzing block comments. Below is a simple example showing some of the more common features of DocDigger in documenting parts of the Twitter API that created by Grape.
+DocDigger is a tool for generating RESTful web API documentation by analyzing block comments in source code. Below is a simple example showing some of the more common features of DocDigger in documenting parts of the Twitter API that created by Grape.
 
 ```ruby
 module Twitter

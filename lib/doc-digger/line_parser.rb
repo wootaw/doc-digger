@@ -3,7 +3,7 @@ module DocDigger
 
     PICKS = { java: /\A\s*\*/, erlang: /\A\s*%/, perl: /\A\s*#/ }
     COMMANDS = /\A@(doc(\_state)?|res(\_(param|response|state|bind))?|cmd\_(def|use))\Z/
-    PARAMETER_LOCATIONS = /\Apath|query|header|form|body\Z/
+    PARAMETER_LOCATIONS = /\Apath|query|header|form|body|cookie\Z/
     RESPONSE_LOCATIONS = /\Aheader|body\Z/
 
     def initialize(str, clazz)

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["wootaw@gmail.com"]
 
   spec.summary       = "This gem generate RESTful web API documentation."
-  spec.description   = "RESTWoods is a tool for generating RESTful web API documentation by analyzing block comments."
+  spec.description   = "DocDigger is a tool for generating RESTful web API documentation by analyzing block comments in source code."
   spec.homepage      = "https://github.com/wootaw/doc-digger"
   spec.license       = "MIT"
 
@@ -40,4 +40,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-remote", '~> 0'
   spec.add_development_dependency "pry-nav", '~> 0'
   spec.add_development_dependency "codeclimate-test-reporter", '~> 0.4.8'
+  spec.add_development_dependency "git", '~> 1'
 end
