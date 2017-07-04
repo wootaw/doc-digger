@@ -4,7 +4,9 @@ require "git"
 require "doc-digger/version"
 require "doc-digger/line_parser"
 require "doc-digger/file_parser"
+require "doc-digger/exceptions"
 require "doc-digger/scan"
+require "doc-digger/base"
 
 class String
   # def black;          "\033[30m#{self}\033[0m" end
