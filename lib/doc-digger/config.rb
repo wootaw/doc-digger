@@ -25,19 +25,22 @@ module DocDigger
           :type         => String,
           :required     => true,
           :description  => 'Upload host'
+        },
+        :user_agent => {
+          :default      => "DocDigger-Ruby/#{VERSION} (#{RUBY_PLATFORM}) Ruby/#{RUBY_VERSION}",
+          :public       => false,
+          :type         => String,
+          :required     => true,
+          :description  => 'User agent'
         }
       }.freeze
 
       attr_reader :settings
 
       def init(options = {})
-        @settings = Hash[DEFAULTS.map { |k, v| [k, v[:default]] }]
+        @settings = Hash[DEFAULTS.map { |k, v| [k, v[:default]] }] if @settings.nil?
         @settings.merge!(options.select { |k, v| DEFAULTS[k][:public] })
-
-        DEFAULTS.each do |k, v|
-          raise MissingArgumentsError, [k] if v[:required] && @settings[k].nil?
-          raise ArgumentTypeError.new(k, v[:type]) unless @settings[k].class == v[:type]
-        end
+        check
       end
 
       def load(file)
@@ -47,6 +50,13 @@ module DocDigger
           init(config_options)
         else
           raise MissingConfigError, file
+        end
+      end
+
+      def check
+        DEFAULTS.each do |k, v|
+          raise MissingArgumentsError, [k] if v[:required] && @settings[k].nil?
+          raise ArgumentTypeError.new(k, v[:type]) unless @settings[k].class == v[:type]
         end
       end
 
